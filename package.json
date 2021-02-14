@@ -6,8 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "example",
+    "heroku"
+  ],
+  "engines": {
+    "node": "14.x"
+  },
   "author": "anas",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "ajv": "^7.1.0",
     "body-parser": "^1.19.0",
