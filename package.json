@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "i dont know yet",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+  "scripts": {  
     "start": "node index.js"
   },
   "keywords": [
     "example",
-    "heroku"
+    "heroku",
+    "node"
   ],
   "engines": {
     "node": "14.x"
