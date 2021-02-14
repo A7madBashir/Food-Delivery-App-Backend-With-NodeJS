@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "i dont know yet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "anas",
+  "license": "ISC",
+  "dependencies": {
+    "ajv": "^7.1.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "follow-redirects": "^1.13.2",
+    "mssql": "^6.3.1",
+    "safe-buffer": "^5.2.1",
+    "tedious": "^11.0.3"
+  }
+}

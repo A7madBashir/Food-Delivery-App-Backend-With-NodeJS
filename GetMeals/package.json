@@ -1,0 +1,11 @@
+{
+  "name": "get_meal_screen",
+  "version": "1.0.0",
+  "description": "get the meal for my app ",
+  "main": "getmeals.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
