@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const searches = require('./models/searches');
 const sql = require("mssql");
 const _Port=process.env.Port || 80;
 app.use(express.json());
