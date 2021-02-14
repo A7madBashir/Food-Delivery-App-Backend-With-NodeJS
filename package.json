@@ -4,12 +4,13 @@
   "description": "i dont know yet",
   "main": "index.js",
   "scripts": {  
-    "start": "node index.js"
+    "start": "node index.js"    
   },
   "keywords": [
     "example",
     "heroku",
-    "node"
+    "node",
+    "npm"
   ],
   "engines": {
     "node": "14.x"
