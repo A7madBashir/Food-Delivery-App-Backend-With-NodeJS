@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const sql = require("mssql");
-const _Port=process.env.Port || 3000
+//const _Port=process.env.Port || 3000;
 app.use(express.json());
 //connect to DB
 const config = {
@@ -37,6 +37,6 @@ app.get("/dish", async (req, res) => {
 	
 });
 
-app.listen(_Port, function () {
+app.listen(3000, function () {
   console.log("the server started");
 });
