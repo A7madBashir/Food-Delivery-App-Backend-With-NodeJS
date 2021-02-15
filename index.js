@@ -58,12 +58,12 @@ app.get("/checkmember", async (req, res) => {
 });
 
 //        SEND THE DATA TO CUSTOMER TABLE IN THE DATABASE
-app.post('/auth',(req,res)=>{
+app.get('/auth',(req,res)=>{
   res.send("You Are in Login Page Authraziation");
   var username=req.body.username;
   var password=req.body.password;
   if(username&&password){
-    req.query('Select * from customer where username = ? and password = ?', [username, password], function(error, results, fields) {
+    req.query('Select * from customer where username = ? and [password] = ?', [username, password], function(error, results, fields) {
       if (results.length > 0) {
         request.session.loggedin = true;
         resquest.session.username = username;
@@ -75,6 +75,57 @@ app.post('/auth',(req,res)=>{
     });
   }
 });
+
+
+
+app.get('/customer/:id',(req,res)=>{
+  getorder(req.params.id).then((result) => {
+      res.json(result[0]);
+  }).catch((err) => {
+      
+  });
+})
+
+async function getorder(id){
+  try {
+      let pool = await sql.connect(config);
+      let product = await pool.request()
+          .input('input_parameter', sql.Int, id)
+          .query("SELECT * from Customer where cus_id = @input_parameter");
+      return product.recordsets;
+
+  }
+  catch (error) {
+      console.log(error);
+  }
+}
+
+
+//Check Login Page
+
+app.get('/customer/login/:username&:password',(req,res)=>{
+  getcust(req.params.username,req.params.password).then((result) => {
+      res.json(result[0]);
+  }).catch((err) => {
+      res.send("Whaaaaaaaat!")
+  });
+})
+async function getcust(username,password){
+  try {
+      let pool = await sql.connect(config);
+      let product = await pool.request()
+          .input('input_name', sql.NVarChar, username)
+          .input('input_pass', sql.NVarChar, password)
+          .query("Select * from customer where username =@input_name and [password] =@input_pass");
+      return product.recordsets;
+
+  }
+  catch (error) {
+      console.log(error);
+  }
+}
+
+
 app.get('/home',(req,res)=>{
   res.send("Welcome to my home page Mr."+username);
 })
