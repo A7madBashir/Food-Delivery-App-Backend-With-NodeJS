@@ -49,6 +49,6 @@ app.get("/checkmember", async (req, res) => {
 });
 
 
-app.listen(Port, function () {
-  console.log("the server started\t"+Port);
+app.listen(process.env.PORT || 5000, function () {
+  console.log("the server started");
 });
