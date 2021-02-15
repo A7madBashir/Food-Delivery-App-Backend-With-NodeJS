@@ -31,12 +31,24 @@ app.get("/order", (req, res) => {
 });
 
 app.get("/dish", async (req, res) => {
-  const result = await sql.query`SELECT TOP (1000) [id]
-      ,[UserName]
-  FROM [DB_A6F580_FoodDelivery01].[dbo].[Users]`;
+  const result = await sql.query`selct id,UserName from [User]`;
   res.status(200).json([...result.recordset]);	
 });
+app.get("/meal", async (req, res) => {
+  const result = await sql.query`select * from meal`;
+  //select [me_id],[description],[price],[image],[name] from [DB_A6F580_FoodDelivery01].[dbo].[meal]
+  res.status(200).json([...result.recordset]);
+	
+});
 
-app.listen(Port, function () {
+app.get("/checkmember", async (req, res) => {
+  const result = await sql.query`select * from customer`;
+  //select [me_id],[description],[price],[image],[name] from [DB_A6F580_FoodDelivery01].[dbo].[meal]
+  res.status(200).json([...result.recordset]);
+	
+});
+
+
+app.listen(80, function () {
   console.log("the server started");
 });
