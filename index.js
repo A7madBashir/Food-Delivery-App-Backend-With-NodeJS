@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const searches = require('./models/searches');
+//const searches = require('./models/searches');
 const sql = require("mssql");
 const Port=process.env.Port || 80;
 app.use(express.json());
@@ -34,8 +34,7 @@ app.get("/dish", async (req, res) => {
   const result = await sql.query`SELECT TOP (1000) [id]
       ,[UserName]
   FROM [DB_A6F580_FoodDelivery01].[dbo].[Users]`;
-  res.status(200).json([...result.recordset]);
-	
+  res.status(200).json([...result.recordset]);	
 });
 
 app.listen(Port, function () {
