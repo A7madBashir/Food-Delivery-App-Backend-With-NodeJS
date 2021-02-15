@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const searches = require('./models/searches');
 const sql = require("mssql");
-const _Port=process.env.Port || 80;
+const Port=process.env.Port || 80;
 app.use(express.json());
 //connect to DB
 const config = {
@@ -38,6 +38,6 @@ app.get("/dish", async (req, res) => {
 	
 });
 
-app.listen(_Port, function () {
+app.listen(Port, function () {
   console.log("the server started");
 });
