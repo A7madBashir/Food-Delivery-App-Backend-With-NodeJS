@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "i dont know yet",
   "main": "index.js",
-  "scripts": {  
-    "start": "node index.js"    
+  "scripts": {
+    "start": "node index.js"
   },
   "keywords": [
     "example",
@@ -14,7 +14,7 @@
   ],
   "engines": {
     "node": "14.15.5",
-    "npm":"6.14.11"
+    "npm": "6.14.11"
   },
   "author": "anas",
   "license": "MIT",
@@ -22,9 +22,11 @@
     "ajv": "^7.1.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "follow-redirects": "^1.13.2",
     "mssql": "^6.3.1",
     "safe-buffer": "^5.2.1",
+    "session": "^0.1.0",
     "tedious": "^11.0.3"
   }
 }
