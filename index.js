@@ -117,14 +117,43 @@ async function getcust(username,password){
           .input('input_name', sql.NVarChar, username)
           .input('input_pass', sql.NVarChar, password)
           .query("Select * from customer where username =@input_name and [password] =@input_pass");
-      return product.recordsets;
-
+      return product.recordsets;    
   }
   catch (error) {
       console.log(error);
   }
 }
 
+
+//    Add customer To The DATABASE
+
+
+app.get('/customer/signup/:username&:password&:phone&:email',(req,res)=>{
+  addCustomer(req.params.username,req.params.password,req.params.phone,req.params.email).then((result) => {
+      res.json(result[0]);
+  }).catch((err) => {
+      res.send("Whaaaaaaaat!")
+  });
+})
+
+
+async function addCustomer(username,password,phone,email) {
+
+  try {
+      let pool = await sql.connect(config);
+      let insertProduct = await pool.request()
+          .input('username', sql.NVarChar, username)
+          .input('phone', sql.NVarChar, phone)
+          .input('email', sql.NVarChar, email)
+          .input('password', sql.NVarChar, password)            
+          .execute('AddCustomer');
+      return insertProduct.recordsets;
+  }
+  catch (err) {
+      console.log(err);
+  }
+
+}
 
 app.get('/home',(req,res)=>{
   res.send("Welcome to my home page Mr."+username);
