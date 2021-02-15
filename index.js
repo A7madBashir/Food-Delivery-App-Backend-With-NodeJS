@@ -30,8 +30,8 @@ app.get("/order", (req, res) => {
   res.json({ name: "rssss" });
 });
 
-app.get("/dish", async (req, res) => {
-  const result = await sql.query`selct id,UserName from [User]`;
+app.get("/user", async (req, res) => {
+  const result = await sql.query`selct * from [User]`;
   res.status(200).json([...result.recordset]);	
 });
 app.get("/meal", async (req, res) => {
