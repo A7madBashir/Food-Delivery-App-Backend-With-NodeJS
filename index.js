@@ -155,6 +155,27 @@ async function addCustomer(username,password,phone,email) {
 
 }
 
+
+app.get('/meal/search/:name',(req,res)=>{
+  searchmeal(req.params.name).then((result) => {
+      res.json(result);
+  }).catch((err) => {
+      
+  });
+})
+async function searchmeal(name) {
+
+  try {
+      let pool = await sql.connect(config);
+      let insertProduct = await pool.request()
+          .input('name', sql.NVarChar, name)
+          .execute('Searchmeal');
+      return insertProduct.recordsets;
+  }
+  catch (err) {
+      console.log(err);
+  }
+}
 app.get('/home',(req,res)=>{
   res.send("Welcome to my home page Mr."+username);
 })
