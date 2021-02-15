@@ -49,6 +49,6 @@ app.get("/checkmember", async (req, res) => {
 });
 
 
-app.listen(80, function () {
-  console.log("the server started");
+app.listen(Port, function () {
+  console.log("the server started\t"+Port);
 });
