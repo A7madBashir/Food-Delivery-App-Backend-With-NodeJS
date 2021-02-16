@@ -158,7 +158,7 @@ async function addCustomer(username,password,phone,email) {
 
 app.get('/meal/search/:name',(req,res)=>{
   searchmeal(req.params.name).then((result) => {
-      res.json(result);
+      res.json(result[0]);
   }).catch((err) => {
       
   });
