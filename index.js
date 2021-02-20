@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 });
 app.get("/order", (req, res) => {
   //read from DB
-  res.json({ name: "rssss" });
+  res.json([[]]);
 });
 
 
