@@ -3,16 +3,17 @@ const app = express();
 const sql = require("mssql");
 app.use(express.json());
 var session = require("express-session");
-var port=process.env.port;
+const { json } = require("body-parser");
+var port = process.env.port;
 //connect to DB
 const config = {
   user: "DB_A6F580_FoodDelivery01_admin",
   password: "123456789FD",
   server: "SQL5102.site4now.net",
   database: "DB_A6F580_FoodDelivery01",
-options: {
-    "enableArithAbort": true,
-    },  
+  options: {
+    enableArithAbort: true,
+  },
 };
 
 sql.connect(config, (err) => {
@@ -21,12 +22,13 @@ sql.connect(config, (err) => {
   }
   console.log("connection succ");
 });
-app.use(session({
-  secret: 'Secret',
-  resave: true,
-  saveUninitalized: true
-
-}));
+app.use(
+  session({
+    secret: "Secret",
+    resave: true,
+    saveUninitalized: true,
+  })
+);
 app.get("/", (req, res) => {
   res.send("It's All Good!");
 });
@@ -35,150 +37,143 @@ app.get("/order", (req, res) => {
   res.json({ name: "rssss" });
 });
 
+
+
 //        GET THE DATA FROM USER TABLE IN THE DATABASE
-app.get("/user", async (req, res) => {
+app.get("/User", async (req, res) => {
   const result = await sql.query`selct * from [User]`;
-  res.status(200).json([...result.recordset]);	
+  res.status(200).json([...result.recordset]);
 });
 
 //        GET THE DATA FROM MEAL TABLE IN THE DATABASE
-app.get("/meal", async (req, res) => {
+app.get("/Meal", async (req, res) => {
   const result = await sql.query`select * from meal`;
   //select [me_id],[description],[price],[image],[name] from [DB_A6F580_FoodDelivery01].[dbo].[meal]
   res.status(200).json([...result.recordset]);
-	
 });
 
 //        GET THE DATA FROM CUSTOMER TABLE IN THE DATABASE
-app.get("/checkmember", async (req, res) => {
+app.get("/Customer", async (req, res) => {
   const result = await sql.query`select * from customer`;
   //select [me_id],[description],[price],[image],[name] from [DB_A6F580_FoodDelivery01].[dbo].[meal]
   res.status(200).json([...result.recordset]);
-	
-});
-
-//        SEND THE DATA TO CUSTOMER TABLE IN THE DATABASE
-app.get('/auth',(req,res)=>{
-  res.send("You Are in Login Page Authraziation");
-  var username=req.body.username;
-  var password=req.body.password;
-  if(username&&password){
-    req.query('Select * from customer where username = ? and [password] = ?', [username, password], function(error, results, fields) {
-      if (results.length > 0) {
-        request.session.loggedin = true;
-        resquest.session.username = username;
-        response.redirect('/home');
-      } else {
-        response.send('Username and/or Password not found');
-      }
-      response.end();
-    });
-  }
 });
 
 
+//Check Customer Login
 
-app.get('/customer/:id',(req,res)=>{
-  getorder(req.params.id).then((result) => {
-      res.json(result[0]);
-  }).catch((err) => {
-      
+app.post("/Customer/Login", (req, res) => {
+  let Login = {...req.body};    
+  Checkcus(Login).then((result) => {
+    if(result.length===1){
+    res.status(201).json(result);
+    //res.status(201).send("It's All Done!");
+    }
+    else {
+      res.send("It's Not Macth!");
+    }
   });
-})
+});
 
-async function getorder(id){
+async function Checkcus(Login) {
   try {
-      let pool = await sql.connect(config);
-      let product = await pool.request()
-          .input('input_parameter', sql.Int, id)
-          .query("SELECT * from Customer where cus_id = @input_parameter");
-      return product.recordsets;
-
-  }
-  catch (error) {
-      console.log(error);
+    let pool = await sql.connect(config);
+    let product = await pool
+      .request()
+      .input("input_name", sql.NVarChar, Login.username)
+      .input("input_pass", sql.NVarChar, Login.password)
+      .query(
+        "Select * from customer where username =@input_name and [password] =@input_pass"
+      );
+    return product.recordsets;
+  } catch (error) {
+    console.log(error);
   }
 }
-
-
-//Check Login Page
-
-app.get('/customer/login/:username&:password',(req,res)=>{
-  getcust(req.params.username,req.params.password).then((result) => {
-      res.json(result[0]);
-  }).catch((err) => {
-      res.send("Whaaaaaaaat!")
-  });
-})
-async function getcust(username,password){
-  try {
-      let pool = await sql.connect(config);
-      let product = await pool.request()
-          .input('input_name', sql.NVarChar, username)
-          .input('input_pass', sql.NVarChar, password)
-          .query("Select * from customer where username =@input_name and [password] =@input_pass");
-      return product.recordsets;    
-  }
-  catch (error) {
-      console.log(error);
-  }
-}
-
+//////////////////
 
 //    Add customer To The DATABASE
 
+app.post("/Customer/Signup", (req, res) => {
+  let Signup = { ...req.body};
 
-app.get('/customer/signup/:username&:password&:phone&:email',(req,res)=>{
-  addCustomer(req.params.username,req.params.password,req.params.phone,req.params.email).then((result) => {
-      res.json(result[0]);
-  }).catch((err) => {
-      res.send("Whaaaaaaaat!")
+  addCustomer(Signup).then((result) => {
+    res.status(201).json(result);
+    res.send("Data Send!");
   });
-})
+});
 
-
-async function addCustomer(username,password,phone,email) {
-
+async function addCustomer(customer) {
   try {
-      let pool = await sql.connect(config);
-      let insertProduct = await pool.request()
-          .input('username', sql.NVarChar, username)
-          .input('phone', sql.NVarChar, phone)
-          .input('email', sql.NVarChar, email)
-          .input('password', sql.NVarChar, password)            
-          .execute('AddCustomer');
-      return insertProduct.recordsets;
+    let pool = await sql.connect(config);
+    let insertProduct = await pool
+      .request()
+      .input("username", sql.NVarChar, customer.username)
+      .input("phone", sql.NVarChar, customer.phone)
+      .input("email", sql.NVarChar, customer.Email)
+      .input("password", sql.NVarChar, customer.password)
+      .execute("AddCustomer");
+    return insertProduct.recordsets;
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-      console.log(err);
-  }
-
 }
 
+//Search Meal By Name In the DataBase
 
-app.get('/meal/search/:name',(req,res)=>{
-  searchmeal(req.params.name).then((result) => {
-      res.json(result[0]);
-  }).catch((err) => {
-      
-  });
-})
+app.get("/Meal/SearchMeal/:name", (req, res) => {
+  searchmeal(req.params.name)
+    .then((result) => {
+      res.json(result[any]);
+    })
+    .catch((err) => {});
+});
 async function searchmeal(name) {
-
   try {
-      let pool = await sql.connect(config);
-      let insertProduct = await pool.request()
-          .input('name', sql.NVarChar, name)
-          .execute('Searchmeal');
-      return insertProduct.recordsets;
-  }
-  catch (err) {
-      console.log(err);
+    let pool = await sql.connect(config);
+    let insertProduct = await pool
+      .request()
+      .input("name", sql.NVarChar, name)
+      .execute("Searchmeal");
+    return insertProduct.recordsets;
+  } catch (err) {
+    console.log(err);
   }
 }
-app.get('/home',(req,res)=>{
-  res.send("Welcome to my home page Mr."+username);
-})
+
+/////////////////
+
+//To Add MEAL To DataBase
+
+app.post("/Meal/AddMeal", (req, res) => {
+  let Meal = { ...req.body };
+
+  addmeal(Meal).then((result) => {
+    res.status(201).json(result);
+    res.send("Data Send!");
+  });
+});
+
+async function addmeal(meal) {
+  try {
+    let pool = await sql.connect(config);
+    let insertmeal = await pool
+      .request()
+      .input("me_name", sql.NVarChar, meal.me_name)
+      .input("image", sql.NVarChar, meal.image)
+      .input("price", sql.Int, meal.price)
+      .input("description", sql.NVarChar, meal.description)
+      .execute("AddMeal");
+    return insertmeal.recordsets;
+  } catch (err) {
+    console.log(err);
+  }
+}
+//////////////////
+
+app.get("/home", (req, res) => {
+  res.send("Welcome to my home page Mr." + username);
+});
 
 app.listen(process.env.PORT || 5000, function () {
   console.log("the server started");
