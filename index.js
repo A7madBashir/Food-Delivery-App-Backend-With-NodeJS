@@ -66,7 +66,7 @@ app.post("/Customer/Login", (req, res) => {
   let Login = {...req.body};    
   Checkcus(Login).then((result) => {
     if(result.length===1){
-    res.status(201).json(result);
+    res.status(201).json(result[0][0]);
     //res.status(201).send("It's All Done!");
     }
     else {
@@ -83,7 +83,7 @@ async function Checkcus(Login) {
       .input("input_name", sql.NVarChar, Login.username)
       .input("input_pass", sql.NVarChar, Login.password)
       .query(
-        "Select * from customer where username =@input_name and [password] =@input_pass"
+        "Select * from customer where username =@input_name and [password] =@input_pass "
       );
     return product.recordsets;
   } catch (error) {
