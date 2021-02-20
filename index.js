@@ -82,7 +82,7 @@ async function Checkcus(Login) {
       .input("input_name", sql.NVarChar, Login.username)
       .input("input_pass", sql.NVarChar, Login.password)
       .query(
-        "Select * from customer where username =@input_name and [password] =@input_pass "
+        "Select username,[password] from customer where username =@input_name and [password] =@input_pass "
       );
     return product.recordsets;
   } catch (error) {
