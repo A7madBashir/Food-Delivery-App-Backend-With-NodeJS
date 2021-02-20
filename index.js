@@ -66,7 +66,7 @@ app.post("/Customer/Login", (req, res) => {
   let Login = {...req.body};    
   Checkcus(Login).then((result) => {
     if(result.length===1){
-    res.status(201).json(result[0][0]);
+    res.status(201).json(result[0]);
     //res.status(201).send("It's All Done!");
     }
     else {
