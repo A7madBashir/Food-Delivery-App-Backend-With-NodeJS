@@ -65,12 +65,11 @@ app.get("/Customer", async (req, res) => {
 app.post("/Customer/Login", (req, res) => {
   let Login = {...req.body};    
   Checkcus(Login).then((result) => {
-    if(result.length===1){
+    if(result.length===1 && result[0][0]!=null){
     res.status(201).json(result[0][0]);
-    //res.status(201).send("It's All Done!");
     }
     else {
-      res.send("It's Not Macth!");
+      res.send(null);
     }
   });
 });
@@ -99,7 +98,7 @@ app.post("/Customer/Signup", (req, res) => {
 
   addCustomer(Signup).then((result) => {
     res.status(201).json(result);
-    res.send("Data Send!");
+    //res.send("Data Send!");
   });
 });
 
