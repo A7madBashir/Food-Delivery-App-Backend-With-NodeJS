@@ -138,7 +138,7 @@ async function UpdateCustomer(customer) {
       .input("id",sql.Int,customer.id)
       .input("username", sql.NVarChar, customer.username)
       .input("phone", sql.NVarChar, customer.phone)
-      .input("email", sql.NVarChar, customer.Email)
+      .input("Email", sql.NVarChar, customer.Email)
       .input("password", sql.NVarChar, customer.password)
       .execute("UpdateCustomer");
     return UpdatreProduct.recordsets;
