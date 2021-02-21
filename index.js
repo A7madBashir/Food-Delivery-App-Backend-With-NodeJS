@@ -117,6 +117,36 @@ async function addCustomer(customer) {
     console.log(err);
   }
 }
+/////////////////
+
+//      Update Customer Details 
+
+app.post("/Customer/Update", (req, res) => {
+  let Update = { ...req.body};
+
+  UpdateCustomer(Update).then((result) => {
+    res.status(201).json(result);
+    //res.send("Data Send!");
+  });
+});
+
+async function UpdateCustomer(customer) {
+  try {
+    let pool = await sql.connect(config);
+    let UpdatreProduct = await pool
+      .request()
+      .input("username", sql.NVarChar, customer.username)
+      .input("phone", sql.NVarChar, customer.phone)
+      .input("email", sql.NVarChar, customer.Email)
+      .input("password", sql.NVarChar, customer.password)
+      .execute("UpdateCustomer");
+    return UpdatreProduct.recordsets;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+/////////////////
 
 //Search Meal By Name In the DataBase
 
@@ -142,32 +172,32 @@ async function searchmeal(name) {
 
 /////////////////
 
-//To Add MEAL To DataBase
+// //To Add MEAL To DataBase
 
-app.post("/Meal/AddMeal", (req, res) => {
-  let Meal = { ...req.body };
+// app.post("/Meal/AddMeal", (req, res) => {
+//   let Meal = { ...req.body };
 
-  addmeal(Meal).then((result) => {
-    res.status(201).json(result);
-    res.send("Data Send!");
-  });
-});
+//   addmeal(Meal).then((result) => {
+//     res.status(201).json(result);
+//     res.send("Data Send!");
+//   });
+// });
 
-async function addmeal(meal) {
-  try {
-    let pool = await sql.connect(config);
-    let insertmeal = await pool
-      .request()
-      .input("me_name", sql.NVarChar, meal.me_name)
-      .input("image", sql.NVarChar, meal.image)
-      .input("price", sql.Int, meal.price)
-      .input("description", sql.NVarChar, meal.description)
-      .execute("AddMeal");
-    return insertmeal.recordsets;
-  } catch (err) {
-    console.log(err);
-  }
-}
+// async function addmeal(meal) {
+//   try {
+//     let pool = await sql.connect(config);
+//     let insertmeal = await pool
+//       .request()
+//       .input("me_name", sql.NVarChar, meal.me_name)
+//       .input("image", sql.NVarChar, meal.image)
+//       .input("price", sql.Int, meal.price)
+//       .input("description", sql.NVarChar, meal.description)
+//       .execute("AddMeal");
+//     return insertmeal.recordsets;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 //////////////////
 
 app.get("/home", (req, res) => {
