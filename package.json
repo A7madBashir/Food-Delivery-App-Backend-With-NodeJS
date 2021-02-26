@@ -26,6 +26,7 @@
     "express-session": "^1.17.1",
     "follow-redirects": "^1.13.2",
     "mssql": "^6.3.1",
+    "mssql-session-store": "^1.0.0",
     "safe-buffer": "^5.2.1",
     "session": "^0.1.0",
     "tedious": "^11.0.3"
