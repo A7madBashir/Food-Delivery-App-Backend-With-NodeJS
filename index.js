@@ -5,7 +5,7 @@ app.use(express.json());
 var session = require("express-session");
 var sqlstore = require('connect-mssql')(session);
 const { json } = require("body-parser");
-
+var storedata=new sqlstore(config,Options);
 //connect to DB
 const config = {
   user: "DB_A6F580_FoodDelivery01_admin",
@@ -15,6 +15,12 @@ const config = {
   options: {
     enableArithAbort: true,
   },
+};
+var Options = {
+  connection: config,
+  ttl: 3600,
+  reapInterval: 3600,
+  reapCallback: function() { console.log('expired sessions were removed'); }
 };
 
 sql.connect(config, (err) => {
@@ -28,7 +34,7 @@ app.use(
     secret: "supersecret",
     resave: true,
     saveUninitalized: true,
-    store:new sqlstore(config,options),  
+    store:storedata,  
 
   })
 );
