@@ -3,8 +3,9 @@ const app = express();
 const sql = require("mssql");
 app.use(express.json());
 var session = require("express-session");
+var sqlstore = require('connect-mssql')(session);
 const { json } = require("body-parser");
-var port = process.env.port;
+
 //connect to DB
 const config = {
   user: "DB_A6F580_FoodDelivery01_admin",
@@ -24,9 +25,11 @@ sql.connect(config, (err) => {
 });
 app.use(
   session({
-    secret: "Secret",
+    secret: "supersecret",
     resave: true,
     saveUninitalized: true,
+    store:new sqlstore(config,options),  
+
   })
 );
 app.get("/", (req, res) => {
