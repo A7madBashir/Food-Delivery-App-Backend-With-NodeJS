@@ -1,10 +1,19 @@
 const express = require("express");
 const app = express();
 const sql = require("mssql");
-app.use(express.json());
-var session = require("express-session");
-var MSSQLStore = require('connect-mssql')(session);
+//var session = require("express-session");
+var passport = require('passport');
+const issueJwt = require("./password_utils").issueJwt;
+const jwtStrategy = require("passport-jwt").Strategy;
+const exctractJwt = require("passport-jwt").ExtractJwt;
+const genPassword = require("./password_utils").genPassword;
+const validatePassword = require("./password_utils").valdatepass;
+const path = require("path");
+const fs=require("fs");
+var LocalStrategy = require('passport-local').Strategy;
 const { json } = require("body-parser");
+
+app.use(express.json());
 //connect to DB
 const config = {
   user: "DB_A6F580_FoodDelivery01_admin",
@@ -15,38 +24,176 @@ const config = {
     enableArithAbort: true,
   },
 };
-
-// var Options = {
-//   connection: config,
-//   ttl: 3600,
-//   reapInterval: 3600,
-//   reapCallback: function() { console.log('expired sessions were removed'); }
-// };
-
-sql.connect(config, (err) => {
+sql.connect(config, (err,done) => {
   if (err) {
     console.log(err);
   }
   console.log("connection succ");
 });
-app.use(
-  session({
-    secret: "supersecret",
-    resave: true,
-    saveUninitalized: true,
-    store: new MSSQLStore(config),
 
-  })
-);
-app.get("/", (req, res) => {
-  res.send("It's All Good!");
+app.get("/", (req, res) => {  
+  res.send("It's All Good!"); 
 });
 app.get("/order", (req, res) => {
   //read from DB
   res.json([[]]);
 });
+////////////////////////////////////////
+
+app.get('/protected', passport.authenticate('jwt', { session: false }), function(req, res,done) {
+  res.status(200).json({success:true,msg:'You Are Authorized!'});
+});
+//getting the path to the public key to be able to verify the jwt token body
+const pathToKey = path.join(`${__dirname}`, "/", "id_rsa_pub.pem");
+// getting the public key form the previosly declared path
+const publicKey = fs.readFileSync(pathToKey, "utf-8");
+//options for JWT token verifier those are the basic options and there is more
+const options = {
+  /* where to get the token from in the request in this case it should be :
+  headers:{
+    Authrzation: Bearer <token>
+  }
+  */
+  jwtFromRequest: exctractJwt.fromAuthHeaderAsBearerToken(),
+  // specifing the key to decrypt the hash with
+  secretOrKey: publicKey,
+  // specifing the algorithim to hash the body so we can comapre it to the token body to verify the jwt token
+  algorithms: ["RS256"],
+};
+
+passport.use(
+  new jwtStrategy(options,(payload,done)=>{
+    console.log("The Payload Id of User Is Here => "+ payload.sub);
+    getCus4JWT(payload.sub).then(result => {      
+      if (result)
+        return done(null, result);
+      else
+        return done(null, false);
+    }).catch(err => done(err,null));
+  })
+);
+async function getCus4JWT(id){
+  let pool = await sql.connect(config);
+  let product = await pool
+      .request()
+      .input("cus_id", sql.Int, id)
+      .query(
+        "Select * from Customers where cus_id =@cus_id"
+      );
+    //product.recordsets[0][0];
+    return product.recordsets[0][0];
+};
+app.post("/Login", (req, res,done) => {
+  let Login = req.body;    
+  
+  CheckcusTest(Login).then((result) => {  
+    if(!result){
+      res.status(200).json({err:"UnAutherized"});
+      return;
+    }
+    const isValid = validatePassword(result.hash,result.salt, Login.password);
+    if(isValid){
+      const jwt = issueJwt(result);
+      res.status(201).json({
+        success: true,
+        user:result,
+        token: jwt.token,
+        expiresIn: jwt.expires,
+      }); 
+    }else{
+      res.status(401).json({err:"Wrong Password"});
+    }    
+  }).catch(err => res.send(err));
+});
+
+async function CheckcusTest(Login) {
+  try {
+    let pool = await sql.connect(config);
+    let product = await pool
+      .request()
+      .input("input_name", sql.NVarChar, Login.username)
+      .query(
+        "Select * from Customers where username =@input_name"
+      );
+    return product.recordsets[0][0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.post('/register',(req,res,done)=>{
+  let Signup = req.body;    
+  const saltHash = genPassword(Signup.password);  
+  Signup.password=saltHash;      
+  addCustomerTest(Signup).then((result) => {    
+    console.log("CUSTOMER ID MUST BE HERE =>"+result.cus_id);
+    //res.status(201).json(result);
+    
+    const jwt = issueJwt(result);
+    res.json({
+      success: true,
+      user:result,
+      token: jwt.token,
+      expiresIn: jwt.expires,
+    });
+    //res.send("Data Send!");
+  });
+});
+
+async function addCustomerTest(customer) {
+  try {
+    let pool = await sql.connect(config);
+    let insertProduct = await pool
+      .request()
+      .input("username", sql.NVarChar, customer.username)
+      .input("phone", sql.NVarChar, customer.phone)
+      .input("email", sql.NVarChar, customer.email)
+      .input("hash", sql.NVarChar, customer.password.hash)
+      .input("salt", sql.NVarChar, customer.password.salt)
+      .execute("AddCustomers");
+      insertProduct.recordsets;
+      let product = await pool
+      .request()
+      .input("username", sql.NVarChar, customer.username)
+      .query(
+        "Select * from Customers where username =@username"
+      );
+    return product.recordsets[0][0];    
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 
+///////////////////////////////////////
+
+// passport.serializeUser(function (user, done) {
+//   console.log('serializing user:', user.username);
+//   done(null, user.username);
+// });
+
+// passport.deserializeUser(function (username, done) {
+//   done(null,username);
+// });
+
+// passport.use('Login', new LocalStrategy({
+//   passReqToCallback: true
+// },
+//   function (req, username, password, done) {
+//     let pool = await sql.connect(config);
+//     let product = await pool
+//       .request()
+//       .input("input_name", sql.NVarChar, username)
+//       .input("input_pass", sql.NVarChar, password)
+//       .query(
+//         "Select username,[password] from customer where username =@input_name and [password] =@input_pass "
+//       );
+//     return product.recordsets;
+    
+//   }
+//   ));
+
+///////////////////////////////////////
 
 //        GET THE DATA FROM USER TABLE IN THE DATABASE
 app.get("/User", async (req, res) => {
@@ -67,7 +214,6 @@ app.get("/Customer", async (req, res) => {
   //select [me_id],[description],[price],[image],[name] from [DB_A6F580_FoodDelivery01].[dbo].[meal]
   res.status(200).json([...result.recordset]);
 });
-
 
 //Check Customer Login
 
@@ -211,8 +357,10 @@ async function searchmeal(name) {
 //////////////////
 
 app.get("/home", (req, res) => {
-  res.send("Welcome to my home page Mr." + username);
+  res.send("Welcome to my home page Mr.");
 });
+
+app.use(passport.initialize());
 
 app.listen(process.env.PORT || 5000, function () {
   console.log("the server started");
