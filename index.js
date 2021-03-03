@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const sql = require("mssql");
-//var session = require("express-session");
 var passport = require('passport');
 const issueJwt = require("./password_utils").issueJwt;
 const jwtStrategy = require("passport-jwt").Strategy;
