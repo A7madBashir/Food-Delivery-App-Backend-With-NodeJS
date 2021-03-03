@@ -36,5 +36,8 @@
     "path": "^0.12.7",
     "safe-buffer": "^5.2.1",
     "tedious": "^11.0.3"
+  },
+  "devDependencies": {
+    "ansi-regex": "^2.1.1"
   }
 }
