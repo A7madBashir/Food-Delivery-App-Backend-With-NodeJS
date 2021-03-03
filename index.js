@@ -10,7 +10,6 @@ const genPassword = require("./password_utils").genPassword;
 const validatePassword = require("./password_utils").valdatepass;
 const path = require("path");
 const fs=require("fs");
-var LocalStrategy = require('passport-local').Strategy;
 const { json } = require("body-parser");
 
 app.use(express.json());
