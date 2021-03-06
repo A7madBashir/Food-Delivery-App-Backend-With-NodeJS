@@ -36,6 +36,16 @@ app.get("/order", (req, res) => {
   //read from DB
   res.json([[]]);
 });
+app.get('/google-map',(req,res)=>{
+  let map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8,
+  });
+  res.send("<div id=\"map\"></div>");
+}
+});
 ////////////////////////////////////////
 
 app.get('/protected', passport.authenticate('jwt', { session: false }), function(req, res,done) {
@@ -307,7 +317,7 @@ async function UpdateCustomer(customer) {
 app.get("/Meal/SearchMeal/:name", (req, res) => {
   searchmeal(req.params.name)
     .then((result) => {
-      res.json(result[any]);
+      res.json(result);
     })
     .catch((err) => {});
 });
@@ -318,7 +328,7 @@ async function searchmeal(name) {
       .request()
       .input("name", sql.NVarChar, name)
       .execute("Searchmeal");
-    return insertProduct.recordsets;
+    return insertProduct.recordsets[0];
   } catch (err) {
     console.log(err);
   }
