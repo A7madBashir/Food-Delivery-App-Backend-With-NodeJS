@@ -10,27 +10,35 @@ const validatePassword = require("./password_utils").valdatepass;
 const path = require("path");
 const fs=require("fs");
 const { json } = require("body-parser");
-
+const router=express.Router();
+const connect=require('./module/connect');
+const mobile=require('./module/mobile');
+//We Can use moment lib to change time or date format
 app.use(express.json());
-//connect to DB
-const config = {
-  user: "DB_A6F580_FoodDelivery01_admin",
-  password: "123456789FD",
-  server: "SQL5102.site4now.net",
-  database: "DB_A6F580_FoodDelivery01",
-  options: {  
-    enableArithAbort: true,
-  },
-};
-sql.connect(config, (err,done) => {
-  if (err) {
-    console.log(err);
-  }
-  console.log("connection succ");
-});
+// //connect to DB
+// const config = {
+//   user: "DB_A6F580_FoodDelivery01_admin",
+//   password: "123456789FD",
+//   server: "sql5063.site4now.net",
+//   database: "DB_A6F580_FoodDelivery01",
+//   options: {  
+//     enableArithAbort: true,
+//   },
+// };
+
+
+// sql.connect(config, (err,done) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log("connection succ");
+// });
+
+app.use("/api/mobile",mobile);
 
 app.get("/", (req, res) => {  
-  res.send("It's All Good!"); 
+
+  res.send("It's All Good!");   
 });
 app.get("/order", (req, res) => {
   //read from DB
