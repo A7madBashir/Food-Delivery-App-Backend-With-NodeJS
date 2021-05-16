@@ -26,7 +26,7 @@ Router
         res.status(200).json({success:true,msg:'You Are Authorized!'});
     });
     //getting the path to the public key to be able to verify the jwt token body
-    const pathToKey = path.join('C:\\Users\\A7mad Bashir\\Desktop\\backend\\module\\passportJWT\\id_rsa_pub.pem');
+    const pathToKey = path.normalize('./module/passportJWT/id_rsa_pub.pem');
     // getting the public key form the previosly declared path
     const publicKey = fs.readFileSync(pathToKey, "utf-8");
     //options for JWT token verifier those are the basic options and there is more
