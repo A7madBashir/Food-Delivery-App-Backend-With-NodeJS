@@ -26,9 +26,9 @@ const valdatepass = (ogHash, salt, pass) => {
   return enteredhash === ogHash;
 };
 // this function issues a jwt token for the user to store an attachto every request as the autherzation header
-const issueJwt = (user) => {
+const issueJwt = (user) => {  
   //getting the path for the private key
-  const pathToPrivKey = path.join(__dirname + "/" + "id_rsa_priv.pem");
+  const pathToPrivKey = path.join('C:\\Users\\A7mad Bashir\\Desktop\\backend\\module\\passportJWT\\id_rsa_priv.pem');
   //getting the private key from the path
   const PrivKey = fs.readFileSync(pathToPrivKey, "utf-8");
   //getting the user id to be able to include it in the token payload
