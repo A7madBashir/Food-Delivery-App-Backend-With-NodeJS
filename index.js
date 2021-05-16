@@ -24,10 +24,7 @@ app.get("/", (req, res) => {
 
   res.send("It's All Good!");   
 });
-app.get("/order", (req, res) => {
-  //read from DB
-  res.json([[]]);
-});
+
 ////////////////////////////////////////
 
 // app.get('/protected', passport.authenticate('jwt', { session: false }), function(req, res,done) {
@@ -346,6 +343,6 @@ app.get("/home", (req, res) => {
 
 
 
-app.listen(5000, function () {
+app.listen(proccess.env.PORT||5000, function () {
   console.log("the server started");
 });

@@ -13,7 +13,7 @@ const config = {
     if (err) {
       console.log(err);
     }
-    console.log("connection succ");
+    console.log("connection success");
   });
   
 
