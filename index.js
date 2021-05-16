@@ -343,6 +343,6 @@ app.get("/home", (req, res) => {
 
 
 
-app.listen(proccess.env.PORT||5000, function () {
+app.listen(process.env.PORT||5000, function () {
   console.log("the server started");
 });
