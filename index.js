@@ -338,7 +338,7 @@ async function searchmeal(name) {
 //////////////////
 
 app.get("/home", (req, res) => {
-  res.send("Welcome to my home page Mr.");
+  res.send("Welcome to my home page Mr");
 });
 
 
