@@ -196,64 +196,7 @@ app.get("/", (req, res) => {
 //   res.status(200).json([...result.recordset]);
 // });
 
-// //Check Customer Login
-
-// app.post("/Customer/Login", (req, res) => {
-//   let Login = {...req.body};    
-//   Checkcus(Login).then((result) => {
-//     if(result.length===1 && result[0][0]!=null){
-//     res.status(201).json(result[0][0]);
-//     }
-//     else {
-//       res.send(null);
-//     }
-//   });
-// });
-
-// async function Checkcus(Login) {
-//   try {
-//     let pool = await sql.connect(config);
-//     let product = await pool
-//       .request()
-//       .input("input_name", sql.NVarChar, Login.username)
-//       .input("input_pass", sql.NVarChar, Login.password)
-//       .query(
-//         "Select username,[password] from customer where username =@input_name and [password] =@input_pass "
-//       );
-//     return product.recordsets;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-// //////////////////
-
-// //    Add customer To The DATABASE
-
-// app.post("/Customer/Signup", (req, res) => {
-//   let Signup = { ...req.body};
-
-//   addCustomer(Signup).then((result) => {
-//     res.status(201).json(result);
-//     //res.send("Data Send!");
-//   });
-// });
-
-// async function addCustomer(customer) {
-//   try {
-//     let pool = await sql.connect(config);
-//     let insertProduct = await pool
-//       .request()
-//       .input("username", sql.NVarChar, customer.username)
-//       .input("phone", sql.NVarChar, customer.phone)
-//       .input("email", sql.NVarChar, customer.Email)
-//       .input("password", sql.NVarChar, customer.password)
-//       .execute("AddCustomer");
-//     return insertProduct.recordsets;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-/////////////////
+///////////////////
 
 //      Update Customer Details 
 
@@ -285,57 +228,8 @@ async function UpdateCustomer(customer) {
 
 /////////////////
 
-//Search Meal By Name In the DataBase
-
-app.get("/Meal/SearchMeal/:name", (req, res) => {
-  searchmeal(req.params.name)
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {});
-});
-async function searchmeal(name) {
-  try {
-    let pool = await sql.connect(config);
-    let insertProduct = await pool
-      .request()
-      .input("name", sql.NVarChar, name)
-      .execute("Searchmeal");
-    return insertProduct.recordsets[0];
-  } catch (err) {
-    console.log(err);
-  }
-}
 
 /////////////////
-
-// //To Add MEAL To DataBase
-
-// app.post("/Meal/AddMeal", (req, res) => {
-//   let Meal = { ...req.body };
-
-//   addmeal(Meal).then((result) => {
-//     res.status(201).json(result);
-//     res.send("Data Send!");
-//   });
-// });
-
-// async function addmeal(meal) {
-//   try {
-//     let pool = await sql.connect(config);
-//     let insertmeal = await pool
-//       .request()
-//       .input("me_name", sql.NVarChar, meal.me_name)
-//       .input("image", sql.NVarChar, meal.image)
-//       .input("price", sql.Int, meal.price)
-//       .input("description", sql.NVarChar, meal.description)
-//       .execute("AddMeal");
-//     return insertmeal.recordsets;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-//////////////////
 
 app.get("/home", (req, res) => {
   res.send("Welcome to my home page Mr");

@@ -16,5 +16,5 @@ const config = {
     console.log("connection success");
   });
   
-
+  module.exports=config;
   module.exports='./connect.js';

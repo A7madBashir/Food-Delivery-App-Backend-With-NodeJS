@@ -1,6 +1,7 @@
 const express=require("express");
 const Router=express.Router();
 const sql=require("mssql");
+const config=require('./connect.js').config
 const passport = require("passport");
 Router.use(function(req,res,next){    
     next();
@@ -26,6 +27,28 @@ Router
         const result=await sql.query("select * from Customer");
         res.status(200).json([...result.recordset]);
     })
-    //        
+    //
+    //Search Meal By Name In the DataBase
+Router
+    .route("/Meal/SearchMeal/:name")
+    .get((req, res) => {
+    searchmeal(req.params.name)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((err) => {});
+    })
+async function searchmeal(name) {
+    try {
+      let pool = await sql.connect(config);
+      let insertProduct = await pool
+        .request()
+        .input("name", sql.NVarChar, name)
+        .execute("Searchmeal");
+      return insertProduct.recordsets[0];
+    } catch (err) {
+      console.log(err);
+    }
+  }        
 
 module.exports=Router;
