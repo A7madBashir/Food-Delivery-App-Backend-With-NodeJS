@@ -12,6 +12,8 @@ const path = require("path");
 const fs=require("fs");
 const Router=express.Router();
 
+// This File About Customer Login/SignUp/UpdateInformation with JWT Auth
+
 Router.use(function(req,res,next){        
     next();
 });
@@ -146,7 +148,40 @@ Router
       console.log(error);
     }
   }
+Router
+  .route("/ShowCustomer")
+  .get(passport.authenticate('jwt', { session: false }),async(req,res)=>{
+      const result=await sql.query("select * from Customer");
+      res.status(200).json([...result.recordset]);
+  });
+  //
+
+  // app.post("/Customer/Update", (req, res) => {
+  //   let Update = { ...req.body};
   
+  //   UpdateCustomer(Update).then((result) => {
+  //     res.status(201).json(result);
+  //     //res.send("Data Send!");
+  //   });
+  // });
+  
+  // async function UpdateCustomer(customer) {
+  //   try {
+  //     let pool = await sql.connect(config);
+  //     let UpdatreProduct = await pool
+  //       .request()
+  //       .input("id",sql.Int,customer.id)
+  //       .input("username", sql.NVarChar, customer.username)
+  //       .input("phone", sql.NVarChar, customer.phone)
+  //       .input("Email", sql.NVarChar, customer.Email)
+  //       .input("password", sql.NVarChar, customer.password)
+  //       .execute("UpdateCustomer");
+  //     return UpdatreProduct.recordsets;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
+
   app.use(passport.initialize());
   module.exports=Router;
   

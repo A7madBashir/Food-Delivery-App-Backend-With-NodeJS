@@ -21,13 +21,6 @@ Router
       //select [me_id],[description],[price],[image],[name] from [DB_A6F580_FoodDelivery01].[dbo].[meal]
       res.status(200).json([...result.recordset]);
     });
-Router
-    .route("/ShowCustomer")
-    .get(passport.authenticate('jwt', { session: false }),async(req,res)=>{
-        const result=await sql.query("select * from Customer");
-        res.status(200).json([...result.recordset]);
-    })
-    //
     //Search Meal By Name In the DataBase
 Router
     .route("/Meal/SearchMeal/:name")
