@@ -2,7 +2,6 @@ const express=require("express");
 const Router=express.Router();
 const sql=require("mssql");
 const config=require('./connect.js').config
-const passport = require("passport");
 Router.use(function(req,res,next){    
     next();
 })
@@ -43,10 +42,6 @@ async function searchmeal(name) {
       console.log(err);
     }
   }        
-Router
-  .route("/order/:cus_id")
-  .get(passport.authenticate('jwt',{session:false}),async(req,res)=>{
-      const result=await sql.query(`select * from [order] where cus_id=${req.params.cus_id}`);
-      res.status(200).json([...result.recordset]);
-  })
+
+
 module.exports=Router;

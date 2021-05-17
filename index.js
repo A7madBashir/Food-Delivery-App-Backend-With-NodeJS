@@ -20,6 +20,8 @@ app.use(passport.initialize());
 app.use("/api/mobile",mobile);
 app.use("/Customers",customer);
 
+// The StartUp File For The Backend Of 3Wafi Mobile System
+
 app.get("/", (req, res) => {  
 
   res.send("It's All Good!");   

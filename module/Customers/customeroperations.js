@@ -12,7 +12,8 @@ const path = require("path");
 const fs=require("fs");
 const Router=express.Router();
 
-// This File About Customer Login/SignUp/UpdateInformation with JWT Auth
+// This File About Customer Login/SignUp/UpdateInformation/Ordering with JWT Auth
+customer_id=null;
 
 Router.use(function(req,res,next){        
     next();
@@ -48,6 +49,7 @@ Router
   passport.use(      
     new jwtStrategy(options,(payload,done)=>{        
       console.log("The Payload Id of User Is Here => "+ payload.sub);
+      customer_id=payload.sub;
       getCus4JWT(payload.sub).then(result => {      
         if (result)
           return done(null, result);
@@ -155,7 +157,12 @@ Router
       res.status(200).json([...result.recordset]);
   });
   //
-
+Router
+  .route("/order")
+  .get(passport.authenticate('jwt',{session:false}),async(req,res)=>{
+      const result=await sql.query(`select * from [order] where cus_id=${customer_id}`);
+      res.status(200).json([...result.recordset]);
+  });
   // app.post("/Customer/Update", (req, res) => {
   //   let Update = { ...req.body};
   
