@@ -50,5 +50,10 @@ async function searchmeal(name) {
       console.log(err);
     }
   }        
-
+Router
+  .route("/order/:cus_id")
+  .get(passport.authenticate('jwt',{session:false}),async(req,res)=>{
+      const result=await sql.query(`select * from [order] where cus_id=${req.params.cus_id}`);
+      res.status(200).json([...result.recordset]);
+  })
 module.exports=Router;
