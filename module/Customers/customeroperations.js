@@ -116,7 +116,7 @@ Router
 Router
   .route("/Login").post( (req, res,done) => {
     let Login = req.body;        
-    CheckcusTest(Login).then((result) => {  
+    Checkcus(Login).then((result) => {  
       if(!result){
         res.status(200).json({err:"UnAutherized"});
         return;
@@ -136,7 +136,7 @@ Router
     }).catch(err => res.send(err));
   });
   
-  async function CheckcusTest(Login) {
+  async function Checkcus(Login) {
     try {
       let pool = await sql.connect(config);
       let product = await pool

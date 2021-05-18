@@ -14,11 +14,13 @@ var passport = require('passport');
 // const connect=require('./module/connect');
 const mobile=require('./module/mobile');
 const customer=require('./module/Customers/customeroperations');
+const delivery=require('./module/Deliverys/deliveryoperation');
 //We Can use moment lib to change time or date format
 app.use(express.json());
 app.use(passport.initialize());
 app.use("/api/mobile",mobile);
 app.use("/Customers",customer);
+app.use("/Delivery",delivery);
 
 // The StartUp File For The Backend Of 3Wafi Mobile System
 
