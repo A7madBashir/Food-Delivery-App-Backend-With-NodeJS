@@ -163,31 +163,33 @@ Router
       const result=await sql.query(`select * from [order] where cus_id=${customer_id}`);
       res.status(200).json([...result.recordset]);
   });
-  // app.post("/Customer/Update", (req, res) => {
-  //   let Update = { ...req.body};
+
+Router
+  .route('/Edit')
+  .post(passport.authenticate('jwt',{session:false}),(req, res) => {
+    let Update = { ...req.body};  
+    UpdateCustomer(Update).then((result) => {
+      res.status(201).json(result);
+      //res.send("Data Send!");
+    });
+  });
   
-  //   UpdateCustomer(Update).then((result) => {
-  //     res.status(201).json(result);
-  //     //res.send("Data Send!");
-  //   });
-  // });
-  
-  // async function UpdateCustomer(customer) {
-  //   try {
-  //     let pool = await sql.connect(config);
-  //     let UpdatreProduct = await pool
-  //       .request()
-  //       .input("id",sql.Int,customer.id)
-  //       .input("username", sql.NVarChar, customer.username)
-  //       .input("phone", sql.NVarChar, customer.phone)
-  //       .input("Email", sql.NVarChar, customer.Email)
-  //       .input("password", sql.NVarChar, customer.password)
-  //       .execute("UpdateCustomer");
-  //     return UpdatreProduct.recordsets;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
+  async function UpdateCustomer(customer) {
+    try {
+      let pool = await sql.connect(config);
+      let UpdatreProduct = await pool
+        .request()
+        .input("id",sql.Int,customer.id)
+        .input("username", sql.NVarChar, customer.username)
+        .input("phone", sql.NVarChar, customer.phone)
+        .input("Email", sql.NVarChar, customer.Email)
+        .input("password", sql.NVarChar, customer.password)
+        .execute("UpdateCustomer");
+      return UpdatreProduct.recordsets;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   app.use(passport.initialize());
   module.exports=Router;

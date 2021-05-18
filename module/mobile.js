@@ -42,6 +42,11 @@ async function searchmeal(name) {
       console.log(err);
     }
   }        
-
-
+//Meal By ID for one screen...
+Router
+  .route('/Meal/ById/:m_id')
+  .get(async(req,res)=>{
+    const result=await sql.query(`select * from meal where m_id=${req.params.m_id}`);
+    res.status(200).json([...result.recordset]);
+  })
 module.exports=Router;
