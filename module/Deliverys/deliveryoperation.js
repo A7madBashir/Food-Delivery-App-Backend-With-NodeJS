@@ -20,7 +20,7 @@ Router.use((req,res,next)=>{
     // Root Page Information
 Router
     .route('/').get((req,res)=>{
-        res.send("Welcome To Delivery Man Section Here You will See All Things About Adding and Checking and operations of Delivery And Authraise");
+        res.send("Welcome To Delivery Man Section Here You will See All Things About Checking , operations of Delivery And Authraise");
     });
     //  Checking DeliveryMan Authorized!
 Router 

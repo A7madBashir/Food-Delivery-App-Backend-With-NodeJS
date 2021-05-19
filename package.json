@@ -21,11 +21,14 @@
     "ajv": "^7.1.0",
     "body-parser": "^1.19.0",
     "connect-mssql": "^1.5.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "follow-redirects": "^1.13.2",
     "fs": "0.0.1-security",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "mssql": "^6.3.1",
     "mssql-session-store": "^1.0.0",
@@ -34,6 +37,7 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "safe-buffer": "^5.2.1",
+    "socket.io": "^4.1.2",
     "tedious": "^11.0.3"
   }
 }
