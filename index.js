@@ -12,7 +12,7 @@ const delivery=require('./module/Deliverys/deliveryoperation');
 // const socket=require('./module/Socket-io/socketio');
 
 //We Can use moment lib to change time or date format
-app.use(express.json());
+app.use(express.json());  
 app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
@@ -26,20 +26,55 @@ app.get("/", (req, res) => {
   res.send("It's All Good!");   
 });
 
-io.on('connection', function(socket){
-  console.log('NEW USER CONNECTED !');
-  var myroom = socket.handshake.query.uid;
-  console.log(myroom);
-  socket.join(myroom);
+// io.on('connection', function(socket){
+//   console.log('NEW USER CONNECTED !');
+  
+//   //console.log(myroom);
+//   //socket.join(myroom);
 
-  socket.on('disconnect', () => {
-      console.log('USER DISCONNECTED !');
-      socket.leave(myroom);
+//   socket.on('disconnect', () => {
+//       console.log('USER DISCONNECTED !');
+//       socket.leave(myroom);
+//   });
+//   socket.on('msg', function(data) {
+//       console.log("Success______________________. ✔");
+//       io.sockets.in(myroom).emit('msg',{message: data.message,room: data.room,name :data.name});	    			    		
+//   });
+// });
+
+io.on('connection', function (socket) {
+  
+  console.log('socket connect...', socket.id);  
+
+  // socket.on('typing', function name(data) {
+  //   console.log(data);
+  //   io.emit('typing', data);
+    
+  // })
+
+  socket.on('message', function name(data) {
+    console.log(data);
+    io.emit('message', data);
+    socket.join(socket.id);
+  })
+
+  // socket.on('location', function name(data) {
+  //   console.log(data);
+  //   io.emit('location', data);
+  // })
+
+  socket.on('connect', function () {
+    console.log("USer Connected....>>>>>@<<<<<<...");
+  })
+
+  socket.on('disconnect', function () {
+    console.log('socket disconnect...', socket.id);
+    // handleDisconnect()
   });
-  socket.on('msg', function(data) {
-      console.log("Success______________________. ✔");
-      io.sockets.in(myroom).emit('msg',{message: data.message,room: data.room,name :data.name});	    			    		
-  });
+  // socket.on('error', function (err) {
+  //   console.log('received error from client:', client.id)
+  //   console.log(err)
+  // })
 });
 
 
