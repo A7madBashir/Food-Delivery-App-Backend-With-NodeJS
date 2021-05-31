@@ -9,6 +9,7 @@ console.log("the server started");}));
 const mobile=require('./module/mobile');
 const customer=require('./module/Customers/customeroperations');
 const delivery=require('./module/Deliverys/deliveryoperation');
+const { json } = require("body-parser");
 // const socket=require('./module/Socket-io/socketio');
 
 //We Can use moment lib to change time or date format
@@ -26,42 +27,28 @@ app.get("/", (req, res) => {
   res.send("It's All Good!");   
 });
 
-// io.on('connection', function(socket){
-//   console.log('NEW USER CONNECTED !');
-  
-//   //console.log(myroom);
-//   //socket.join(myroom);
-
-//   socket.on('disconnect', () => {
-//       console.log('USER DISCONNECTED !');
-//       socket.leave(myroom);
-//   });
-//   socket.on('msg', function(data) {
-//       console.log("Success______________________. ✔");
-//       io.sockets.in(myroom).emit('msg',{message: data.message,room: data.room,name :data.name});	    			    		
-//   });
-// });
-
-io.on('connection', function (socket) {
+io.on('connection', function (socket) {  
+  console.log("User Connected....>>>>>@<<<<<<...");
+  // socket.on('connect',   () => {
+  //   console.log("user Connected....>>>>>@<<<<<<...");
+  // });
+  var myroom = socket.handshake.query.uid;
   console.log(myroom);
-  console.log('socket connect...', socket.id);  
-  socket.on('/test',(msg)=>{
-    console.log("Work???"+msg);
-  });
+	socket.join(myroom);
+  //console.log('socket connect...', socket.id);  
+
   // socket.on('typing', function name(data) {
   //   console.log(data);
   //   io.emit('typing', data);
     
   // });
-  socket.on('connect',  ()=> {
-    console.log("USer Connected....>>>>>@<<<<<<...");
-  });
+  
   
   socket.on('message', function (data) {
     console.log(data);
     io.emit('message', data);
-    
-    socket.join(socket.id);
+    io.sockets.in(myroom).emit('message',{message: data.message,room: data.room,name :data.name})
+    socket.join(myroom);
   });
 
   // socket.on('location', function name(data) {
@@ -73,6 +60,7 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', ()=> {
     console.log('socket disconnect...', socket.id);
+    socket.leave(myroom);
     // handleDisconnect()
   });
   // socket.on('error', function (err) {
