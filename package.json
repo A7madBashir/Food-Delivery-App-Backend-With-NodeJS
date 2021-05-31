@@ -37,7 +37,8 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "safe-buffer": "^5.2.1",
-    "socket.io": "^4.1.2",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^4.1.2",
     "tedious": "^11.0.3"
   }
 }

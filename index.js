@@ -43,31 +43,35 @@ app.get("/", (req, res) => {
 // });
 
 io.on('connection', function (socket) {
-  
+  console.log(myroom);
   console.log('socket connect...', socket.id);  
-
+  socket.on('/test',(msg)=>{
+    console.log("Work???"+msg);
+  });
   // socket.on('typing', function name(data) {
   //   console.log(data);
   //   io.emit('typing', data);
     
-  // })
-
-  socket.on('message', function name(data) {
+  // });
+  socket.on('connect',  ()=> {
+    console.log("USer Connected....>>>>>@<<<<<<...");
+  });
+  
+  socket.on('message', function (data) {
     console.log(data);
     io.emit('message', data);
+    
     socket.join(socket.id);
-  })
+  });
 
   // socket.on('location', function name(data) {
   //   console.log(data);
   //   io.emit('location', data);
   // })
 
-  socket.on('connect', function () {
-    console.log("USer Connected....>>>>>@<<<<<<...");
-  })
+  
 
-  socket.on('disconnect', function () {
+  socket.on('disconnect', ()=> {
     console.log('socket disconnect...', socket.id);
     // handleDisconnect()
   });
