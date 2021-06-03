@@ -27,23 +27,17 @@ app.get("/", (req, res) => {
   res.send("It's All Good!");   
 });
 
+// Using Socket-io for real time connection with database and mobile phone and customers....
 io.on('connection', function (socket) {  
   console.log("User Connected....>>>>>@<<<<<<...");
-  // socket.on('connect',   () => {
-  //   console.log("user Connected....>>>>>@<<<<<<...");
-  // });
+
   var myroom = socket.handshake.query.uid;
   console.log(myroom);
 	socket.join(myroom);
-  //console.log('socket connect...', socket.id);  
-
-  // socket.on('typing', function name(data) {
-  //   console.log(data);
-  //   io.emit('typing', data);
-    
-  // });
-  
-  
+  //console.log('socket connect...', socket.id);     
+  //emit the message from client 
+  //we can add room to the parameter to combine the message with the private room
+  //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
   socket.on('message', function (data) {
     console.log(data);
     io.emit('message', data);
@@ -54,10 +48,8 @@ io.on('connection', function (socket) {
   // socket.on('location', function name(data) {
   //   console.log(data);
   //   io.emit('location', data);
-  // })
-
+  // });
   
-
   socket.on('disconnect', ()=> {
     console.log('socket disconnect...', socket.id);
     socket.leave(myroom);
