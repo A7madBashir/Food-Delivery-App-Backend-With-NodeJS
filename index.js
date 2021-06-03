@@ -24,25 +24,23 @@ app.use("/Delivery",delivery);
 // The StartUp File For The Backend Of 3Wafi Mobile System
 
 app.get("/", (req, res) => {  
-  res.send("It's All Good!");   
+  res.send("<h1>It's All Good!</h1>");   
 });
 
 // Using Socket-io for real time connection with database and mobile phone and customers....
 io.on('connection', function (socket) {  
-  console.log("User Connected....>>>>>@<<<<<<...");
+  console.log(`User Connected....>>>>>${Socket.id}<<<<<<...`);
 
   var myroom = socket.handshake.query.uid;
-  console.log(myroom);
-	socket.join(myroom);
-  //console.log('socket connect...', socket.id);     
+  console.log(myroom);	     
+
+
   //emit the message from client 
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
   socket.on('message', function (data) {
     console.log(data);
-    //io.emit('message', data);
-    // io.sockets.in(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
-    //io.sockets.in(myroom).emit('receive',data.message);
+    // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})    
     socket.to(myroom).emit('receive',data.message);
     socket.join(myroom);
   });
@@ -54,8 +52,7 @@ io.on('connection', function (socket) {
   
   socket.on('disconnect', ()=> {
     console.log('socket disconnect...', socket.id);
-    socket.leave(myroom);
-    // handleDisconnect()
+    socket.leave(myroom);    
   });
   // socket.on('error', function (err) {
   //   console.log('received error from client:', client.id)
