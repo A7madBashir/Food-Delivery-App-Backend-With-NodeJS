@@ -44,7 +44,7 @@ io.on('connection', function (socket) {
     // io.sockets.in(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
     //io.sockets.in(myroom).emit('receive',data.message);
     socket.to(myroom).emit('receive',data.message);
-    //socket.join(myroom);
+    socket.join(myroom);
   });
 
   // socket.on('location', function name(data) {
