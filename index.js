@@ -41,7 +41,8 @@ io.on('connection', function (socket) {
   socket.on('message', function (data) {
     console.log(data);
     //io.emit('message', data);
-    io.sockets.in(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
+    // io.sockets.in(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
+    io.sockets.in(myroom).emit('receive',data);
     socket.join(myroom);
   });
 
