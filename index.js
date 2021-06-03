@@ -40,8 +40,8 @@ io.on('connection', function (socket) {
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
   socket.on('message', function (data) {
     console.log(data);
-    io.emit('message', data);
-    io.sockets.in(myroom).emit('message',{message: data.message,room: data.room,name :data.name})
+    //io.emit('message', data);
+    io.sockets.in(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
     socket.join(myroom);
   });
 
