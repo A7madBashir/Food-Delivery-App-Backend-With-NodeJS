@@ -33,7 +33,6 @@ io.on('connection', function (socket) {
 
   var myroom = socket.handshake.query.uid;
   console.log(myroom);	     
-
   //emit the message from client 
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
