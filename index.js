@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 
 // Using Socket-io for real time connection with database and mobile phone and customers....
 io.on('connection', function (socket) {  
-  console.log(`User Connected....>>>>>${Socket.id}<<<<<<...`);
+  console.log(`User Connected....>>>>>${socket.id}<<<<<<...`);
 
   var myroom = socket.handshake.query.uid;
   console.log(myroom);	     
