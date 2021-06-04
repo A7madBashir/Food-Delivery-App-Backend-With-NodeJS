@@ -156,12 +156,19 @@ Router
       const result=await sql.query("select * from Customer");
       res.status(200).json([...result.recordset]);
   });
-  //
+
+  // The Order is just like the food cart when only the customers login and add meal to pay 
+  // And press pay BUTTON should GET an command to insert record with the data from the screen
+  // In ORDER Table in DataBase So This Route will insert the data that come from the app
+  // AND SEND MAX(OR_ID) TO ROOM ID IN SOCKET FOR CUSTOMER THAT PAY AND CLOSER DELIVERY_BOY TO HIM
+  // NOTICE: who should get the max id the socket not the order route it's just notice to socket to get room id;
+  // it's maybe complex so we should do this process in the order
 Router
   .route("/order")
-  .get(passport.authenticate('jwt',{session:false}),async(req,res)=>{
-      const result=await sql.query(`select * from [order] where cus_id=${customer_id}`);
-      res.status(200).json([...result.recordset]);
+  .post(passport.authenticate('jwt',{session:false}),async(req,res)=>{
+      let data={...req.body};      
+      //const result=await sql.query(`select * from [order] where cus_id=${data.id}`);
+      //res.status(200).json([...result.recordset]);
   });
 
 Router

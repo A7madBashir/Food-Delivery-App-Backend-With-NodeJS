@@ -41,8 +41,8 @@ io.on('connection', function (socket) {
   socket.on('message', function (data) {
     console.log(data);
     // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})    
-    socket.to(myroom).emit('receive',data.message);
     socket.join(myroom);
+    socket.to(myroom).emit('receive',data.message);    
   });
 
   // socket.on('location', function name(data) {
