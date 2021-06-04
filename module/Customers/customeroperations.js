@@ -166,10 +166,28 @@ Router
 Router
   .route("/order")
   .post(passport.authenticate('jwt',{session:false}),async(req,res)=>{
-      let data={...req.body};      
-      //const result=await sql.query(`select * from [order] where cus_id=${data.id}`);
-      //res.status(200).json([...result.recordset]);
+      let data={...req.body};    
+      InsertOrder(data).then((result) => {
+        res.status(201).json(result);
+        //res.send("Data Send!");
+      });      
   });
+
+  async function InsertOrder(order){
+    try{      
+      let pool = await sql.connect(config);
+      let insertorder = await pool
+        .request()
+        .input("id",sql.Int,order.id)
+        .input("total_price",sql.Int,order.price)
+        .input("or_count",sql.Int,order.count)
+        .input("cus_id",sql.Int,order.customer)
+        .execute("AddOrder");
+      return insertorder.recordsets;
+    }catch(err){
+      console.log(err);
+    }
+  }
 
 Router
   .route('/Edit')
