@@ -3,7 +3,7 @@ const app = express();
 var passport = require('passport');
 
 // Add Socket-io and pass the PORT of API instead of Http Server  
-const io =require('socket.io')(app.listen(process.env.PORT||5000, function () {
+const io =require('socket.io')(app.listen(process.env.PORT||3000, function () {
 console.log("the server started");}));
 
 const mobile=require('./module/mobile');
