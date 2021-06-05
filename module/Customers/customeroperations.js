@@ -13,7 +13,7 @@ const fs=require("fs");
 const Router=express.Router();
 
 // This File About Customer Login/SignUp/UpdateInformation/Ordering with JWT Auth
-customer_id=null;
+customer_id=0;
 
 Router.use(function(req,res,next){        
     next();
@@ -26,7 +26,7 @@ Router
 //      TESTING FOR CHECK THE CUSTOMER WITH HIS TOKEN
 Router 
     .route('/protected').get( passport.authenticate('jwt', { session: false }), function(req, res,done) {
-        res.status(200).json({success:true,msg:'You Are Authorized!'});
+        res.status(201).json({success:true,msg:'You Are Authorized!'});
     });
     //getting the path to the public key to be able to verify the jwt token body
     const pathToKey = path.normalize('./module/passportJWT/id_rsa_pub.pem');
@@ -50,7 +50,7 @@ Router
     new jwtStrategy(options,(payload,done)=>{        
       console.log("The Payload Id of User Is Here => "+ payload.sub);
       customer_id=payload.sub;
-      getCus4JWT(payload.sub).then(result => {      
+      getCus4JWT(customer_id).then(result => {      
         if (result)
           return done(null, result);
         else
@@ -152,8 +152,9 @@ Router
   }
 Router
   .route("/ShowCustomer")
-  .get(passport.authenticate('jwt', { session: false }),async(req,res)=>{
-      const result=await sql.query("select * from Customer");
+  .get(passport.authenticate('jwt', { session: false }),async(req,res)=>{ 
+
+      const result=await sql.query("select * from customer");
       res.status(200).json([...result.recordset]);
   });
 
