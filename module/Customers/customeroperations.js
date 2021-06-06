@@ -4,7 +4,7 @@ const config=require("../connect").config;
 const sql = require("mssql");
 var passport = require('passport');
 const issueJwt = require("../passportJWT/password_utils").issueJwt;
-const jwtStrategy = require("passport-jwt").Strategy;
+const jwtStrategy = require("passport-jwt").Strategy
 const exctractJwt = require("passport-jwt").ExtractJwt;
 const genPassword = require("../passportJWT/password_utils").genPassword;
 const validatePassword = require("../passportJWT/password_utils").valdatepass;
@@ -14,18 +14,19 @@ const Router=express.Router();
 
 // This File About Customer Login/SignUp/UpdateInformation/Ordering with JWT Auth
 customer_id=0;
-
+Router.use(passport.initialize());
 Router.use(function(req,res,next){        
     next();
 });
 
 Router
     .route('/').get((req,res)=>{
-        res.send("Welcome To Customer Section Here You will See All Things About Adding and Checking Customres And Authraise");
-    })
+        res.send("Welcome To Customers Section Here You will See All Things About Adding and Checking Customres And Authraise");
+    });
 //      TESTING FOR CHECK THE CUSTOMER WITH HIS TOKEN
 Router 
-    .route('/protected').get( passport.authenticate('jwt', { session: false }), function(req, res,done) {
+    .route('/protected')
+    .get( passport.authenticate('jwt', { session: false }), (req,res) =>{
         res.status(201).json({success:true,msg:'You Are Authorized!'});
     });
     //getting the path to the public key to be able to verify the jwt token body
@@ -36,41 +37,42 @@ Router
  const options = {
         /* where to get the token from in the request in this case it should be :
         headers:{
-        Authrzation: Bearer <token>
+        Authorization : Bearer <token>
         }
         */
-        jwtFromRequest: exctractJwt.fromAuthHeaderAsBearerToken(),
+        jwtFromRequest :exctractJwt.fromAuthHeaderAsBearerToken(),        
         // specifing the key to decrypt the hash with
         secretOrKey: publicKey,
         // specifing the algorithim to hash the body so we can comapre it to the token body to verify the jwt token
         algorithms: ["RS256"],
-    };
-//Router    
-  passport.use(      
-    new jwtStrategy(options,(payload,done)=>{        
+    } 
+
+    passport.use(
+      new jwtStrategy(options,(payload,done)=>{        
       console.log("The Payload Id of User Is Here => "+ payload.sub);
-      customer_id=payload.sub;
-      getCus4JWT(customer_id).then(result => {      
+      customer_id=payload.sub;      
+      CheckCus4JWT(customer_id).then(result => { 
+        console.log("result:"+result);
         if (result)
           return done(null, result);
         else
           return done(null, false);
       }).catch(err => done(err,null));
     })
-  );
-  async function getCus4JWT(id){
+  )
+   async function CheckCus4JWT(id){
+    console.log("Run here?");
     let pool = await sql.connect(config);
-    let product = await pool
-        .request()
-        .input("cus_id", sql.Int, id)
-        .query(
-          "Select * from Customer where cus_id =@cus_id"
-        );
+    let product = await pool.request()
+        .input("id", sql.Int, id)
+        .query('SELECT * FROM CUSTOMER WHERE cus_id=@id');
       //product.recordsets[0][0];
-      return product.recordsets[0][0];
-  };
+    console.log(product.recordsets);
+    return product.recordsets[0][0];  
+  }
+  
 Router
-.route('/register').post((req,res,done)=>{
+  .route('/register').post((req,res,done)=>{
     let Signup = req.body;    
     const saltHash = genPassword(Signup.password);  
     Signup.password=saltHash;      
@@ -153,8 +155,7 @@ Router
 Router
   .route("/ShowCustomer")
   .get(passport.authenticate('jwt', { session: false }),async(req,res)=>{ 
-
-      const result=await sql.query("select * from customer");
+      const result=await sql.query(`select * from customer`);
       res.status(200).json([...result.recordset]);
   });
 
@@ -217,6 +218,6 @@ Router
     }
   }
 
-  app.use(passport.initialize());
+  
   module.exports=Router;
   
