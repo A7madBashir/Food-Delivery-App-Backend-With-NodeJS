@@ -52,8 +52,7 @@ Router
       new jwtStrategy(options,(payload,done)=>{        
       console.log("The Payload Id of User Is Here => "+ payload.sub);
       customer_id=payload.sub;            
-      CheckCus4JWT(customer_id).then(function (result){ 
-        console.log("result:"+result);
+      CheckCus4JWT(customer_id).then(function (result){         
         if (result)
           return done(null, result);
         else
