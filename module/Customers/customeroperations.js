@@ -44,14 +44,15 @@ Router
         // specifing the key to decrypt the hash with
         secretOrKey: publicKey,
         // specifing the algorithim to hash the body so we can comapre it to the token body to verify the jwt token
-        algorithms: ["RS256"],
-    } 
+        algorithms: ["RS256"]
+    }     
+    // const token = jwt.sign(payload, secretOrKey, { expiresIn  });
 
     passport.use('jwt',
       new jwtStrategy(options,(payload,done)=>{        
       console.log("The Payload Id of User Is Here => "+ payload.sub);
-      customer_id=payload.sub;      
-      CheckCus4JWT(customer_id).then(result => { 
+      customer_id=payload.sub;            
+      CheckCus4JWT(customer_id).then(function (result){ 
         console.log("result:"+result);
         if (result)
           return done(null, result);
@@ -64,14 +65,12 @@ Router
       );
     })
   )
-   async function CheckCus4JWT(id){
-    console.log("Run here?");
+   async function CheckCus4JWT(id){    
     let pool = await sql.connect(config);
     let product = await pool.request()
         .input("id", sql.Int, id)
         .query('SELECT * FROM CUSTOMER WHERE cus_id=@id');
-      //product.recordsets[0][0];
-    console.log(product.recordsets);
+      //product.recordsets[0][0];    
     return product.recordsets[0][0];  
   }
   
