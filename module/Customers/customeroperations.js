@@ -26,7 +26,7 @@ Router
 //      TESTING FOR CHECK THE CUSTOMER WITH HIS TOKEN
 Router 
     .route('/protected')
-    .get( passport.authenticate('jwt', { session: false }), (req,res) =>{
+    .get( passport.authenticate('jwt', { session: false }), (req,res,next) =>{
         res.status(201).json({success:true,msg:'You Are Authorized!'});
     });
     //getting the path to the public key to be able to verify the jwt token body
