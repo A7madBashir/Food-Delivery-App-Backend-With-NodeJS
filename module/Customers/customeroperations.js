@@ -47,7 +47,7 @@ Router
         algorithms: ["RS256"],
     } 
 
-    passport.use(
+    passport.use('jwt',
       new jwtStrategy(options,(payload,done)=>{        
       console.log("The Payload Id of User Is Here => "+ payload.sub);
       customer_id=payload.sub;      
@@ -57,7 +57,11 @@ Router
           return done(null, result);
         else
           return done(null, false);
-      }).catch(err => done(err,null));
+      }).catch(err => {
+        console.log("From JWT Function"+err);
+        done(err,null);        
+      }      
+      );
     })
   )
    async function CheckCus4JWT(id){
