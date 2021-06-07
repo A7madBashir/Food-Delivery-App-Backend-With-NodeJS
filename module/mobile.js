@@ -56,5 +56,11 @@ Router
     const result=await sql.query(`select meal.m_id ,meal.m_name, meal.image, meal.price ,meal.m_count ,meal.Description from have,meal where rest_id=${req.params.rest_id}`);
     res.status(200).json([...result.recordset]);
   })
+Router
+  .route('/Resturant')
+  .get(async (req,res)=>{
+    const result=await sql.query(`select * from resturant`);
+    res.status(200).json([...result.recordset]);
+  })
 
 module.exports=Router;
