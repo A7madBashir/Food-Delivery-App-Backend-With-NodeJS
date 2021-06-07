@@ -197,6 +197,8 @@ Router
   .route('/Edit')
   .post(passport.authenticate('jwt',{session:false}),(req, res) => {
     let Update = { ...req.body};  
+    const saltHash = genPassword(Update.password);  
+    Update.password=saltHash;    
     UpdateCustomer(Update).then((result) => {
       res.status(201).json(result);
       //res.send("Data Send!");
@@ -212,6 +214,7 @@ Router
         .input("username", sql.NVarChar, customer.username)
         .input("phone", sql.NVarChar, customer.phone)
         .input("Email", sql.NVarChar, customer.Email)
+        .input("address", sql.NVarChar, customer.address)
         .input("password", sql.NVarChar, customer.password)
         .execute("UpdateCustomer");
       return UpdatreProduct.recordsets;

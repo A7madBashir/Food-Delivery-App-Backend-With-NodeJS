@@ -69,5 +69,12 @@ Router
     const result=await sql.query(`select Distinct meal.m_id,meal.[image],meal.[price],meal.m_count,meal.m_name,meal.[Description] from resturant,meal,have where have.rest_id=${req.params.rest_id} and meal.m_id=have.m_id`);
     res.status(200).json([...result.recordset]);
   })
+  //Get Resturant Of MEAL
+Router
+  .route('/Meal/Resturant/byid/:m_id')
+  .get(async(req,res)=>{
+    const result=await sql.query(`select distinct resturant.address,resturant.rest_name,resturant.phone from resturant,have,meal where have.m_id=${req.params.m_id} and have.rest_id=resturant.rest_id`);
+    res.status(200).json([...result.recordset]);
+  })
 
 module.exports=Router;
