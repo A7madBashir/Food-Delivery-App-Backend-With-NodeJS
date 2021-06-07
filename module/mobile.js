@@ -53,7 +53,7 @@ Router
 Router
   .route('/Resturant/byid/:rest_id')
   .get(async(req,res)=>{
-    const result=await sql.query(`select * from resturant where rest_id=1=${req.params.rest_id}`);
+    const result=await sql.query(`select * from resturant where rest_id=${req.params.rest_id}`);
     res.status(200).json([...result.recordset]);
   })
 Router
