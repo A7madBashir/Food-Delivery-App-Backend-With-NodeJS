@@ -41,7 +41,29 @@ async function searchmeal(name) {
     } catch (err) {
       console.log(err);
     }
-  }        
+  }    
+  
+  Router
+    .route("/Meal/SearchResturant/:name")
+    .get((req, res) => {
+    searchrest(req.params.name)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((err) => {});
+    })
+async function searchrest(name) {
+    try {
+      let pool = await sql.connect(config);
+      let insertProduct = await pool
+        .request()
+        .input("name", sql.NVarChar, name)
+        .execute("Searchresturant");
+      return insertProduct.recordsets[0];
+    } catch (err) {
+      console.log(err);
+    }
+  }    
 //Meal By ID for one screen...
 Router
   .route('/Meal/ById/:m_id')
