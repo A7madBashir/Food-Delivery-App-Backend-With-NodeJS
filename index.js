@@ -30,35 +30,41 @@ app.get("/", (req, res) => {
 // Using Socket-io for real time connection with database and mobile phone and customers....
 io.on('connection', function (socket) {  
   console.log(`User Connected....>>>>>${socket.id}<<<<<<...`);
-
-  // var myroom = socket.handshake.query.uid;
-  // console.log(myroom);	     
-  socket.on('join-room',(room)=>{
-    socket.join(room)
+  
+  //Send BroadCast Message to get delivery man in flutter the delivery who is on will get the message
+  //so in this case will activiate function that take last order added to database 
+  //This order will send to order-room event to join the room
+  socket.on('get-delivery',(data)=>{
+    console.log(data);
+    socket.broadcast.emit('receive',data)
   })
+
   //emit the message from client 
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
-  socket.on('message', function (data) {
+  socket.on('message',  (data,room) =>{
     console.log(data);
     // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})        
-    socket.to(myroom).emit('receive',data.message);    
+    socket.to(room).emit('receive',data.message);    
   });
-  socket.on('order',(order)=>{
-    console.log("add order");
-    //this event will send from customer first
-    //After send data to the database it's should get the last order that added
-    //so here we can get id room that will joined customer and delivery
+
+  //this event will send from customer first
+  //After send data to the database it's should get the last order that added
+  //so here we can join room that customer joined by order id from get-delivery event
+  socket.on('order-room',(room)=>{
+    console.log("add order room");
     
+    socket.join(room);
   })
-  // socket.on('location', function name(data) {
-  //   console.log(data);
-  //   io.emit('location', data);
-  // });
+  //this come and go from customer to delivery and resturant
+   socket.on('location', (data,room) =>{
+    console.log(data);
+    socket.to(room).emit('get-location', data.message);
+  });
   
-  socket.on('disconnect', ()=> {
+  socket.on('disconnect', (room)=> {
     console.log('socket disconnect...');
-    socket.leave(myroom);    
+    socket.leave(room);    
   });
   // socket.on('error', function (err) {
   //   console.log('received error from client:', client.id)
