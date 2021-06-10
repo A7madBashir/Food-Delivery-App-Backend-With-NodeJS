@@ -78,7 +78,7 @@ Router
     let Signup = req.body;    
     const saltHash = genPassword(Signup.password);  
     Signup.password=saltHash;      
-    addCustomerTest(Signup).then((result) => {    
+    addCustomer(Signup).then((result) => {    
       console.log("CUSTOMER ID MUST BE HERE =>"+result.cus_id);
       //res.status(201).json(result);
       
@@ -93,7 +93,7 @@ Router
     });
   });
   
-  async function addCustomerTest(customer) {
+  async function addCustomer(customer) {
     try {
       let pool = await sql.connect(config);
       let insertProduct = await pool
@@ -163,10 +163,10 @@ Router
 
   // The Order is just like the food cart when only the customers login and add meal to pay 
   // And press pay BUTTON should GET an command to insert record with the data from the screen
-  // In ORDER Table in DataBase So This Route will insert the data that come from the app
-  // AND SEND MAX(OR_ID) TO ROOM ID IN SOCKET FOR CUSTOMER THAT PAY AND CLOSER DELIVERY_BOY TO HIM
-  // NOTICE: who should get the max id the socket not the order route it's just notice to socket to get room id;
-  // it's maybe complex so we should do this process in the order
+  // To ORDER Table in DataBase So This Route will insert the data that came from the app and get this last order added
+  // AND SEND IT TO join-room event IN SOCKET FOR CUSTOMER and DELIVERY   
+  //After That we should send data to bill table and show it to customer
+  
 Router
   .route("/order")
   .post(passport.authenticate('jwt',{session:false}),async(req,res)=>{
@@ -182,16 +182,30 @@ Router
       let pool = await sql.connect(config);
       let insertorder = await pool
         .request()
-        .input("id",sql.Int,order.id)
-        .input("total_price",sql.Int,order.price)
-        .input("or_count",sql.Int,order.count)
-        .input("cus_id",sql.Int,order.customer)
+        .input("price",sql.Int,order.price)
+        .input("count",sql.Int,order.count)
+        .input("customer",sql.Int,order.customer)
         .execute("AddOrder");
-      return insertorder.recordsets;
+        insertorder.recordsets;
+        let product = await pool
+        .request()
+        .query(
+          "Select or_id from [order] where or_id in (select max(or_id) from [order])"
+        );
+      return product.recordsets[0][0];
     }catch(err){
       console.log(err);
     }
   }
+
+Router
+.route('/Bill')
+.get(passport.authenticate('jwt',{session:false}),(req,res)=>{
+  const result=await sql.query(`select * from bill where bi_id in (select max(bi_id) from bill)`);
+  res.status(200).json([...result.recordset]);
+})
+
+
 
 Router
   .route('/Edit')
@@ -208,7 +222,7 @@ Router
   async function UpdateCustomer(customer) {
     try {
       let pool = await sql.connect(config);
-      let UpdatreProduct = await pool
+      let EditCustomer = await pool
         .request()
         .input("id",sql.Int,customer.id)
         .input("username", sql.NVarChar, customer.username)
@@ -217,7 +231,7 @@ Router
         .input("address", sql.NVarChar, customer.address)
         .input("password", sql.NVarChar, customer.password)
         .execute("UpdateCustomer");
-      return UpdatreProduct.recordsets;
+      return EditCustomer.recordsets;
     } catch (err) {
       console.log(err);
     }
