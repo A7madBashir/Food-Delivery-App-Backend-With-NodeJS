@@ -31,25 +31,33 @@ app.get("/", (req, res) => {
 io.on('connection', function (socket) {  
   console.log(`User Connected....>>>>>${socket.id}<<<<<<...`);
 
-  var myroom = socket.handshake.query.uid;
-  console.log(myroom);	     
+  // var myroom = socket.handshake.query.uid;
+  // console.log(myroom);	     
+  socket.on('join-room',(room)=>{
+    socket.join(room)
+  })
   //emit the message from client 
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
   socket.on('message', function (data) {
     console.log(data);
-    // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})    
-    socket.join(myroom);
+    // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})        
     socket.to(myroom).emit('receive',data.message);    
   });
-
+  socket.on('order',(order)=>{
+    console.log("add order");
+    //this event will send from customer first
+    //After send data to the database it's should get the last order that added
+    //so here we can get id room that will joined customer and delivery
+    
+  })
   // socket.on('location', function name(data) {
   //   console.log(data);
   //   io.emit('location', data);
   // });
   
   socket.on('disconnect', ()=> {
-    console.log('socket disconnect...', socket.id);
+    console.log('socket disconnect...');
     socket.leave(myroom);    
   });
   // socket.on('error', function (err) {

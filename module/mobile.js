@@ -42,6 +42,8 @@ async function searchmeal(name) {
       console.log(err);
     }
   }    
+
+  //Search Resturant By Name
   
   Router
     .route("/Meal/SearchResturant/:name")
@@ -64,6 +66,7 @@ async function searchrest(name) {
       console.log(err);
     }
   }    
+
 //Meal By ID for one screen...
 Router
   .route('/Meal/ById/:m_id')
@@ -78,12 +81,16 @@ Router
     const result=await sql.query(`select * from resturant where rest_id=${req.params.rest_id}`);
     res.status(200).json([...result.recordset]);
   })
+  //Get All Resturant
 Router
   .route('/Resturant')
   .get(async (req,res)=>{
     const result=await sql.query(`select * from resturant`);
     res.status(200).json([...result.recordset]);
   })
+
+
+  //Get Resturant By Meal Id 
 
 Router
   .route('/Meal/ByResturantId/:rest_id')
