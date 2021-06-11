@@ -200,8 +200,8 @@ Router
 
 Router
 .route('/Bill')
-.get(passport.authenticate('jwt',{session:false}),(req,res)=>{
-  const result=await sql.query(`select * from bill where bi_id in (select max(bi_id) from bill)`);
+.get(passport.authenticate('jwt',{session:false}),async (req,res)=>{
+  const result= await sql.query(`select * from bill where bi_id in (select max(bi_id) from bill)`);
   res.status(200).json([...result.recordset]);
 })
 Router
