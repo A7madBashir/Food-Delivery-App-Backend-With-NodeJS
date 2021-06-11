@@ -52,8 +52,8 @@ io.on('connection', function (socket) {
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on('order-room',(room)=>{
-    console.log("add order room");
-    
+    console.log("add order room:",room);
+
     socket.join(room);
   })
   //this come and go from customer to delivery and resturant
