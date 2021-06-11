@@ -204,9 +204,6 @@ Router
   const result=await sql.query(`select * from bill where bi_id in (select max(bi_id) from bill)`);
   res.status(200).json([...result.recordset]);
 })
-
-
-
 Router
   .route('/Edit')
   .post(passport.authenticate('jwt',{session:false}),(req, res) => {

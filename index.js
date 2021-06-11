@@ -42,10 +42,10 @@ io.on('connection', function (socket) {
   //emit the message from client 
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
-  socket.on('message',  (data,room) =>{
+  socket.on('message',(data,room) =>{
     console.log(data);
     // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})        
-    socket.to(room).emit('receive',data.message);    
+    socket.to(room).emit('receive',data);    
   });
 
   //this event will send from customer first
@@ -58,8 +58,8 @@ io.on('connection', function (socket) {
   })
   //this come and go from customer to delivery and resturant
    socket.on('location', (data,room) =>{
-    console.log(data);
-    socket.to(room).emit('get-location', data.message);
+    console.log(data,room);
+    socket.to(room).emit('get-location', data);
   });
   
   socket.on('disconnect', (room)=> {
