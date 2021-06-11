@@ -187,6 +187,12 @@ Router
         .input("customer",sql.Int,order.customer)
         .execute("AddOrder");
         insertorder.recordsets;
+      let inserthave2= await pool
+        .request()
+        .input('m_id',sql.Int,order.meal_id)
+        .input('or_id',sql.Int,order.order_id)
+        .execute("AddHave2")
+        inserthave2.recordsets;
         let product = await pool
         .request()
         .query(
