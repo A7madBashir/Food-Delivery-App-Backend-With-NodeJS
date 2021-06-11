@@ -172,7 +172,7 @@ Router
   .post(passport.authenticate('jwt',{session:false}),async(req,res)=>{
       let data={...req.body};    
       InsertOrder(data).then((result) => {
-        InsertHave2(result)
+        InsertHave2(result);
         res.status(201).json(result);
         //res.send("Data Send!");
       });      
@@ -191,7 +191,7 @@ Router
         let product = await pool
         .request()
         .query(
-          "Select [order].or_id,meal.m_id from [order],meal where [order].or_id in (select max(or_id) from [order]) and meal.m_id in (select max(m_id) from meal)"
+          `Select [order].or_id,meal.m_id from [order],meal where [order].or_id in (select max(or_id) from [order]) and meal.m_id=${order.m_id}`
         );
       return product.recordsets[0][0];
     }catch(err){
@@ -201,6 +201,7 @@ Router
   
   async function InsertHave2(have){
     try{
+      let pool = await sql.connect(config);
       let inserthave2= await pool
       .request()
       .input('m_id',sql.Int,have.m_id)
