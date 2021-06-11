@@ -62,9 +62,9 @@ io.on('connection', function (socket) {
     socket.to(room).emit('get-location', data);
   });
   
-  socket.on('disconnect', (room)=> {
+  socket.on('disconnect',()=> {
     console.log('socket disconnect...');
-    socket.leave(room);    
+    socket.disconnect();  
   });
   // socket.on('error', function (err) {
   //   console.log('received error from client:', client.id)
