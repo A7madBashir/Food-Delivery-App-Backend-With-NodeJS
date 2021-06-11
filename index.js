@@ -61,6 +61,10 @@ io.on('connection', function (socket) {
     console.log(data,room);
     socket.to(room).emit('get-location', data);
   });
+  socket.on('leave-room',(room)=>{
+    console.log("Leaving Room"+room);
+    socket.leave(room);
+  })
   
   socket.on('disconnect',()=> {
     console.log('socket disconnect...');
