@@ -172,6 +172,7 @@ Router
   .post(passport.authenticate('jwt',{session:false}),async(req,res)=>{
       let data={...req.body};    
       InsertOrder(data).then((result) => {
+        InsertHave2(result)
         res.status(201).json(result);
         //res.send("Data Send!");
       });      
@@ -187,23 +188,39 @@ Router
         .input("customer",sql.Int,order.customer)
         .execute("AddOrder");
         insertorder.recordsets;
-      let inserthave2= await pool
-        .request()
-        .input('m_id',sql.Int,order.meal_id)
-        .input('or_id',sql.Int,order.order_id)
-        .execute("AddHave2")
-        inserthave2.recordsets;
         let product = await pool
         .request()
         .query(
-          "Select or_id from [order] where or_id in (select max(or_id) from [order])"
+          "Select [order].or_id,meal.m_id from [order],meal where [order].or_id in (select max(or_id) from [order]) and meal.m_id in (select max(m_id) from meal)"
         );
       return product.recordsets[0][0];
     }catch(err){
       console.log(err);
     }
   }
-
+  
+  async function InsertHave2(have){
+    try{
+      let inserthave2= await pool
+      .request()
+      .input('m_id',sql.Int,have.m_id)
+      .input('or_id',sql.Int,have.or_id)
+      .execute("AddHave2")
+      inserthave2.recordsets;
+    }catch(err){
+      console.log(err)
+    }
+  }
+// Router
+//   .route('/order/have2')
+//   .post(passport.authenticate('jwt',{session:false}),async (req,res)=>{
+//     let inserthave2= await pool
+//     .request()
+//     .input('m_id',sql.Int,order.meal_id)
+//     .input('or_id',sql.Int,order.order_id)
+//     .execute("AddHave2")
+//     inserthave2.recordsets;
+//   })
 Router
 .route('/Bill')
 .get(passport.authenticate('jwt',{session:false}),async (req,res)=>{
