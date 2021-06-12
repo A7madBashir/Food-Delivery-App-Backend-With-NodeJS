@@ -56,12 +56,13 @@ io.on("connection", function (socket) {
   //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
   socket.on("resturant-id", (restId) => {
     console.log("Restaurant Id:" + restId);
-    var res = getLongLati4Resturant(restId);
+    // var res = getLongLati4Resturant(restId);
     
-    console.log(res);
-    // getLongLati4Resturant(1).then((result) => {
-    //   console.log(result);
-    //   res.status(201).json(result);      
+    // console.log(res);
+    getLongLati4Resturant(restId).then((result) => {
+      console.log(result);
+      // res.status(201).json(result); 
+     });    
 
     });
 
