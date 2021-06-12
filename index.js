@@ -54,7 +54,7 @@ io.on('connection', function (socket) {
   socket.on('resturant-id',(restId)=>{
     console.log("Restaurant Id:"+restId);
     var res=getLongLati4Resturant(restId);    
-    print(res);
+    console.log(res);
   })
 
   async function getLongLati4Resturant(restid){
