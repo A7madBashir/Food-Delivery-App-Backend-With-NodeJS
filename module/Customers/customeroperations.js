@@ -191,7 +191,7 @@ Router
         let product = await pool
         .request()
         .query(
-          `Select [order].or_id,meal.m_id from [order],meal where [order].or_id in (select max(or_id) from [order]) and meal.m_id=${order.m_id}`
+          `Select [order].or_id,meal.m_id,have.rest_id from [order],meal,have where [order].or_id in (select max(or_id) from [order]) and meal.m_id=${order.m_id} and have.m_id=meal.m_id`
         );
       return product.recordsets[0][0];
     }catch(err){

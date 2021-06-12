@@ -48,6 +48,13 @@ io.on('connection', function (socket) {
     socket.to(room).emit('receive',data);    
   });
 
+  //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
+  //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
+  socket.on('resturant-id',(restId)=>{
+    console.log("Restaurant Id:"+restId);
+
+  })
+
   //this event will send from customer first
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
