@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 var passport = require('passport');
+const sql = require("mssql");
 
 // Add Socket-io and pass the PORT of API instead of Http Server  
 const io =require('socket.io')(app.listen(process.env.PORT||3000, function () {
@@ -24,7 +25,7 @@ app.use("/Delivery",delivery);
 // The StartUp File For The Backend Of 3Wafi Mobile System
 
 app.get("/", (req, res) => {  
-  res.send("<h1>It's All Good!</h1>");   
+  res.send("<h1>It's All Good!</h1>");     
 });
 
 // Using Socket-io for real time connection with database and mobile phone and customers....
@@ -52,14 +53,22 @@ io.on('connection', function (socket) {
   //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
   socket.on('resturant-id',(restId)=>{
     console.log("Restaurant Id:"+restId);
-
+    var res=getLongLati4Resturant(restId);    
+    print(res);
   })
+
+  async function getLongLati4Resturant(restid){
+    const result=await sql.query(`select geo_location_latitude,geo_location_longitude from resturant where rest_id=${restid}`);
+    return result.recordsets[0];    
+  }
+
+  
 
   //this event will send from customer first
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on('order-room',(room)=>{
-    console.log("add order room:",room);
+    console.log("order room:",room);
 
     socket.join(room);
   })
