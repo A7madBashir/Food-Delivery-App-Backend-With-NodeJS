@@ -102,8 +102,10 @@ io.on("connection", function (socket) {
   socket.on("order-room", (room) => {
     console.log("order room:", room);
     // var rooms = io.sockets.adapter.rooms[`${room}`];
-    var rooms = io.nsps["/"].adapter.rooms[`${room}`];
-    if (rooms.length < 2) {
+    // var rooms = io.nsps["/"].adapter.rooms[`${room}`];
+    // var rooms =io.of('/').in(`${room}`).clients(clients)      ;
+    var rooms=io.of("/").to(`${room}`).sockets.size;
+    if (rooms < 2) {
       socket.join(`${room}`);
     } else {
       console.log("Can't Join Because it's full");
