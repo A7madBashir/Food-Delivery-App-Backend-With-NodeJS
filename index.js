@@ -47,12 +47,12 @@ io.on("connection", function (socket) {
   //emit the message to client
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
-  socket.on("detail", (data, room) => {
-    console.log(data);
+  // socket.on("detail", (data, room) => {
+  //   console.log(data);
 
-    // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
-    socket.to(`${room}`).emit("receive", data);
-  });
+  //   // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
+  //   socket.to(`${room}`).emit("receive", data);
+  // });
 
   // //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
   // //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
@@ -104,6 +104,7 @@ io.on("connection", function (socket) {
     const count = io.to(`${room}`).clients;    
     console.log(count.length);
     if (count.length < 2) {
+      console.log("Joning Delivery The Room With customer");
       socket.join(`${room}`);
     } else {
       console.log("Can't Join Because it's full");
