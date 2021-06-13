@@ -99,7 +99,7 @@ io.on("connection", function (socket) {
   //this event will send from customer first
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
-  socket.on("order-room", (room) => {
+  socket.on("order-room", async (room) => {
     console.log("order room:", room);
     // var rooms = io.sockets.adapter.rooms[`${room}`];
     // var rooms = io.nsps["/"].adapter.rooms[`${room}`];
