@@ -103,8 +103,9 @@ io.on("connection", function (socket) {
     console.log("order room:", room);
     // var rooms = io.sockets.adapter.rooms[room];
     // var rooms=io.nsps['/'].adapter.rooms[room].length
+    var rooms=io.sockets.adapter.rooms.get(room).size
     // const rooms = io.of("/").adapter.rooms.get(room);
-    var rooms=io.nsps['/'].adapter.rooms[room].sockets;
+    // var rooms=io.nsps['/'].adapter.rooms[room].sockets;
     if (rooms < 2) {
       socket.join(room);
     } else {
