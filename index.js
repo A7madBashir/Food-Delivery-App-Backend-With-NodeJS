@@ -100,14 +100,10 @@ io.on("connection", function (socket) {
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on("order-room", async (room) => {
-    console.log("order room:", room);
-    // var rooms = io.sockets.adapter.rooms[`${room}`];
-    // var rooms = io.nsps["/"].adapter.rooms[`${room}`];
-    // var rooms =io.of('/').in(`${room}`).clients(clients)      ;
-    // var rooms=io.of("/").to(`${room}`).sockets.size;
+    console.log("order room:", room);    
     const count = io.to(`${room}`).clients;    
     console.log(count.length);
-    if (rooms < 2) {
+    if (count < 2) {
       socket.join(`${room}`);
     } else {
       console.log("Can't Join Because it's full");
