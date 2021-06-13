@@ -106,8 +106,9 @@ io.on("connection", function (socket) {
     // var rooms =io.of('/').in(`${room}`).clients(clients)      ;
     // var rooms=io.of("/").to(`${room}`).sockets;
     // console.log("Size Of rooms"+rooms.size);
-    const sockets = await io.of("/").in(`${room}`).fetchSockets();
-    console.log(sockets);
+    const listeners = socket.listenersAny();    
+    console.log(listeners);
+    console.log(listeners.length);
     if (rooms < 2) {
       socket.join(`${room}`);
     } else {
