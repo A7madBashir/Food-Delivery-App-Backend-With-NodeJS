@@ -104,11 +104,9 @@ io.on("connection", function (socket) {
     // var rooms = io.sockets.adapter.rooms[`${room}`];
     // var rooms = io.nsps["/"].adapter.rooms[`${room}`];
     // var rooms =io.of('/').in(`${room}`).clients(clients)      ;
-    // var rooms=io.of("/").to(`${room}`).sockets;
-    // console.log("Size Of rooms"+rooms.size);
-    const listeners = socket.listenersAny();    
-    console.log(listeners);
-    console.log(listeners.length);
+    // var rooms=io.of("/").to(`${room}`).sockets.size;
+    const count = io.to(`${room}`).clients;    
+    console.log(count);
     if (rooms < 2) {
       socket.join(`${room}`);
     } else {
