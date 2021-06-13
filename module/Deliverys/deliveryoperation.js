@@ -97,6 +97,7 @@ Router.route("/Login").post((req, res) => {
       if (result) {
         res.status(200).json({
           success: true,
+          ...result
         });
       } else {
         res.status(401).json({
