@@ -32,41 +32,43 @@ app.get("/", (req, res) => {
 });
 
 // Using Socket-io for real time connection with database and mobile phone and customers....
+
 io.on("connection", function (socket) {
   console.log(`User Connected ...>>>>>${socket.id}<<<<<<...`);
-  
+
   //Send BroadCast Message to get delivery man in flutter the delivery who is on will get the message
   //so in this case will activiate function that take last order added to database
   //This order will send to order-room event to join the room
-  // socket.on("get-delivery", (data) => {
-  //   console.log(data);
-  //   socket.broadcast.emit("receive", data);
-  // });
+  socket.on("get-delivery", (data) => {
+    console.log(data);
+    socket.broadcast.emit("receive", data);
+  });
 
-  //emit the message from client
+  //emit the message to client
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
   socket.on("detail", (data, room) => {
     console.log(data);
-    
+
     // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
     socket.to(room).emit("receive", data);
   });
 
-  //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
-  //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
-  socket.on("resturant-id", (restId,room) => {
-    console.log("Restaurant Id:" + restId);
-    getLongLati4Resturant(restId).then((result) => {
-      console.log(result);
-      // {
-      //  geo_location_latitude: '33.502031',
-      //  geo_location_longitude: '36.292023'
-      // }
-      socket.to(room).emit("recieveRest", result);
-    });
-  });
+  // //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
+  // //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
+  // socket.on("resturant-id", (restId, room) => {
+  //   console.log("Restaurant Id:" + restId);
+  //   getLongLati4Resturant(restId).then((result) => {
+  //     console.log(result);
+  //     // {
+  //     //  geo_location_latitude: '33.502031',
+  //     //  geo_location_longitude: '36.292023'
+  //     // }
+  //     socket.to(room).emit("recieveRest", result);
+  //   });
+  // });
 
+  //Return Distance between 2 markers
   function calcCrow(lat1, lon1, lat2, lon2) {
     var R = 6371; // km
     var dLat = toRad(lat2 - lat1);
@@ -99,8 +101,12 @@ io.on("connection", function (socket) {
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on("order-room", (room) => {
     console.log("order room:", room);
-
-    socket.join(room);
+    var rooms = io.sockets.adapter.rooms[room];
+    if (rooms.length < 2) {
+      socket.join(room);
+    } else {
+      console.log("Can't Join Because it's full");
+    }
   });
   //this come and go from customer to delivery and resturant
   socket.on("location", (data, room) => {
