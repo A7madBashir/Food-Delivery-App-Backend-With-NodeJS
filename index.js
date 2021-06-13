@@ -103,7 +103,7 @@ io.on("connection", function (socket) {
     console.log("order room:", room);    
     const count = io.to(`${room}`).clients;    
     console.log(count.length);
-    if (count <= 2) {
+    if (count.length < 2) {
       socket.join(`${room}`);
     } else {
       console.log("Can't Join Because it's full");
