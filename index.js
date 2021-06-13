@@ -101,7 +101,8 @@ io.on("connection", function (socket) {
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on("order-room", (room) => {
     console.log("order room:", room);
-    var rooms = io.sockets.adapter.rooms[room];
+    // var rooms = io.sockets.adapter.rooms[room];
+    var rooms=io.nsps['/'].adapter.rooms[room].length
     if (rooms.length < 2) {
       socket.join(room);
     } else {
