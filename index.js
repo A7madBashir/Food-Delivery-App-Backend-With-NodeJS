@@ -28,52 +28,71 @@ app.use("/Delivery", delivery);
 // The StartUp File For The Backend Of 3Wafi Mobile System
 
 app.get("/", (req, res) => {
-  res.send("<h1>It's All Good!</h1>");  
+  res.send("<h1>It's All Good!</h1>");
 });
 
 // Using Socket-io for real time connection with database and mobile phone and customers....
 io.on("connection", function (socket) {
-  console.log(`User Connected....>>>>>${socket.id}<<<<<<...`);
-
+  console.log(`User Connected ...>>>>>${socket.id}<<<<<<...`);
+  
   //Send BroadCast Message to get delivery man in flutter the delivery who is on will get the message
   //so in this case will activiate function that take last order added to database
   //This order will send to order-room event to join the room
-  socket.on("get-delivery", (data) => {
-    console.log(data);
-    socket.broadcast.emit("receive", data);
-  });
+  // socket.on("get-delivery", (data) => {
+  //   console.log(data);
+  //   socket.broadcast.emit("receive", data);
+  // });
 
   //emit the message from client
   //we can add room to the parameter to combine the message with the private room
   //ofcours we can take the id room from the order table in database but thin we should make this id be to delivery and customer
-  socket.on("message", (data, room) => {
+  socket.on("detail", (data, room) => {
     console.log(data);
+    
     // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
     socket.to(room).emit("receive", data);
   });
 
   //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
   //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
-  socket.on("resturant-id", (restId) => {
+  socket.on("resturant-id", (restId,room) => {
     console.log("Restaurant Id:" + restId);
-    // var res = getLongLati4Resturant(restId);
-    
-    // console.log(res);
     getLongLati4Resturant(restId).then((result) => {
       console.log(result);
-      // res.status(201).json(result); 
-     });    
-
+      // {
+      //  geo_location_latitude: '33.502031',
+      //  geo_location_longitude: '36.292023'
+      // }
+      socket.to(room).emit("recieveRest", result);
     });
+  });
 
-    async function getLongLati4Resturant(restid) {
-      const result = await sql.query(
-        `select geo_location_latitude,geo_location_longitude from resturant where rest_id=${restid}`
-      );
-      return result.recordsets[0][0];
-    }
-  
+  function calcCrow(lat1, lon1, lat2, lon2) {
+    var R = 6371; // km
+    var dLat = toRad(lat2 - lat1);
+    var dLon = toRad(lon2 - lon1);
+    var lat1 = toRad(lat1);
+    var lat2 = toRad(lat2);
 
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d;
+  }
+
+  // Converts numeric degrees to radians
+  function toRad(Value) {
+    return (Value * Math.PI) / 180;
+  }
+
+  async function getLongLati4Resturant(restid) {
+    const result = await sql.query(
+      `select geo_location_latitude,geo_location_longitude from resturant where rest_id=${restid}`
+    );
+    return result.recordsets[0][0];
+  }
 
   //this event will send from customer first
   //After send data to the database it's should get the last order that added

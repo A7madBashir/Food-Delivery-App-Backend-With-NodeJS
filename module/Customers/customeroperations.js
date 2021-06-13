@@ -222,10 +222,11 @@ Router
 //     .execute("AddHave2")
 //     inserthave2.recordsets;
 //   })
+
 Router
-.route('/Bill')
+.route('/Bill/:or_id')
 .get(passport.authenticate('jwt',{session:false}),async (req,res)=>{
-  const result= await sql.query(`select * from bill where bi_id in (select max(bi_id) from bill)`);
+  const result= await sql.query(`select * from bill where or_id=${req.params.or_id}`);
   res.status(200).json([...result.recordset]);
 })
 Router

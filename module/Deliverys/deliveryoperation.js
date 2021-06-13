@@ -1,6 +1,6 @@
 const express = require("express");
 // const app=express();
-const config=require("../connect").config;
+const config = require("../connect").config;
 const sql = require("mssql");
 // var passport = require('passport');
 // const issueJwt = require("../passportJWT/password_utils").issueJwt;
@@ -10,7 +10,7 @@ const sql = require("mssql");
 // const validatePassword = require("../passportJWT/password_utils").valdatepass;
 // const path = require("path");
 // const fs=require("fs");
-const Router=express.Router();
+const Router = express.Router();
 
 //  This File For DeliveryMan Opreations of Login/EditInformation/ with JWT Auth..
 
@@ -18,12 +18,13 @@ const Router=express.Router();
 //     next();
 // });
 //     // Root Page Information
-Router
-    .route('/').get((req,res)=>{
-        res.send("Welcome To Delivery Man Section Here You will See All Things About Checking , operations of Delivery And Authraise");
-    });
+Router.route("/").get((req, res) => {
+  res.send(
+    "Welcome To Delivery Man Section Here You will See All Things About Checking , operations of Delivery And Authraise"
+  );
+});
 //     //  Checking DeliveryMan Authorized!
-// Router 
+// Router
 //     .route('/protected').get( passport.authenticate('jwt', { session: false }), function(req, res,done) {
 //         res.status(200).json({success:true,msg:'You Are Authorized!'});
 //     });
@@ -44,12 +45,12 @@ Router
 //         // specifing the algorithim to hash the body so we can comapre it to the token body to verify the jwt token
 //         algorithms: ["RS256"],
 //     };
-// //  Router 
-//   passport.use(      
-//     new jwtStrategy(options,(payload,done)=>{        
+// //  Router
+//   passport.use(
+//     new jwtStrategy(options,(payload,done)=>{
 //       // console.log("The Payload Id of User Is Here => "+ payload.sub);
 //     //   delivery_Id=payload.sub;
-//       getDel4JWT(payload.sub).then(result => {      
+//       getDel4JWT(payload.sub).then(result => {
 //         if (result)
 //           return done(null, result);
 //         else
@@ -69,8 +70,8 @@ Router
 //   };
 // Router
 //     .route("/Login").post( (req, res,done) => {
-//         let Login = req.body;        
-//     CheckDelivery(Login).then((result) => {  
+//         let Login = req.body;
+//     CheckDelivery(Login).then((result) => {
 //       if(!result){
 //         res.status(200).json({err:"UnAutherized"});
 //         return;
@@ -83,49 +84,80 @@ Router
 //           user:result,
 //           token: jwt.token,
 //           expiresIn: jwt.expires,
-//         }); 
+//         });
 //       }else{
 //         res.status(401).json({err:"Wrong Password"});
-//       }    
+//       }
 //     }).catch(err => res.send(err));
 //   });
-Router
-.route("/Login").post(
-  (req,res)=>{
-    let Login=req.body;
-    CheckDelivery(Login).then((result)=>{
-      if(result){
+Router.route("/Login").post((req, res) => {
+  let Login = req.body;
+  CheckDelivery(Login)
+    .then((result) => {
+      if (result) {
         res.status(200).json({
-          success:true        
-        })
-      }else{
+          success: true,
+        });
+      } else {
         res.status(401).json({
-          success:false
-        })
+          success: false,
+        });
       }
-    }
-    ).catch(err=> res.send(err));
-    }
-)
-  
+    })
+    .catch((err) => res.send(err));
+});
+
 async function CheckDelivery(Login) {
-    try {
-      let pool = await sql.connect(config);
-      let product = await pool
-        .request()
-        .input("name", sql.NVarChar, Login.username)
-        .input("pass",sql.NVarChar,Login.password)
-        .query(
-          "Select * from DeliveryBoy where username=@name and [password]=@pass"
-        );
-      return product.recordsets[0][0];
-    } catch (error) {
-      console.log(error);
-    }
+  try {
+    let pool = await sql.connect(config);
+    let product = await pool
+      .request()
+      .input("name", sql.NVarChar, Login.username)
+      .input("pass", sql.NVarChar, Login.password)
+      .query(
+        "Select * from DeliveryBoy where username=@name and [password]=@pass"
+      );
+    return product.recordsets[0][0];
+  } catch (error) {
+    console.log(error);
+  }
 }
-//Soulde make Router with post to get Last order from data base
 
+//Make Router To Add Bill Record
+Router.route("/Bill").post(async(req, res) => {
+  let Bill = req.body;
+  AddBill(Bill).then((result) => {
+    if(result){
+      res.status(200).json(result);    
+    }else{
+      res.status(401).json({success:false});
+    }
+  });
+});
 
+async function AddBill(bill) {
+  try {
+    let pool = await sql.connect(config);
+    let product = await pool
+      .request()
+      .input("price", sql.Int, bill.price)
+      .input("date", sql.NVarChar, bill.date)
+      .input("del_id", sql.Int, bill.del_id)
+      .input("or_id", sql.Int, bill.or_id)
+      .execute("AddBill");
+    return product.recordsets;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//Get Order Information from server 
+Router
+.route('/getOrder/:or_id')
+.get(async (req,res)=>{
+  const result= await sql.query(`select * from [order] where or_id=${req.params.or_id}`);
+  res.status(200).json([...result.recordset][0]);
+})
 
 // Router.use(passport.initialize());
-module.exports=Router;
+module.exports = Router;
