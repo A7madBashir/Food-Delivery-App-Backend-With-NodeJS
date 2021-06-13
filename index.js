@@ -51,7 +51,7 @@ io.on("connection", function (socket) {
     console.log(data);
 
     // sockets.to(myroom).emit('receive',{message: data.message,room: data.room,name :data.name})
-    socket.to(room).emit("receive", data);
+    socket.to(`${room}`).emit("receive", data);
   });
 
   // //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
@@ -101,13 +101,9 @@ io.on("connection", function (socket) {
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on("order-room", (room) => {
     console.log("order room:", room);
-    // var rooms = io.sockets.adapter.rooms[room];
-    // var rooms=io.nsps['/'].adapter.rooms[room].length
-    var rooms=io.sockets.adapter.rooms.get(room).size
-    // const rooms = io.of("/").adapter.rooms.get(room);
-    // var rooms=io.nsps['/'].adapter.rooms[room].sockets;
-    if (rooms < 2) {
-      socket.join(room);
+    var rooms = io.sockets.adapter.rooms[`${room}`];        
+    if (rooms.length < 2) {
+      socket.join(`${room}`);
     } else {
       console.log("Can't Join Because it's full");
     }
@@ -115,11 +111,11 @@ io.on("connection", function (socket) {
   //this come and go from customer to delivery and resturant
   socket.on("location", (data, room) => {
     console.log(data, room);
-    socket.to(room).emit("get-location", data);
+    socket.to(`${room}`).emit("get-location", data);
   });
   socket.on("leave-room", (room) => {
     console.log("Leaving Room" + room);
-    socket.leave(room);
+    socket.leave(`${room}`);
   });
 
   socket.on("disconnect", () => {
