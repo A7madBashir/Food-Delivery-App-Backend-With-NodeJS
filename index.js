@@ -106,7 +106,7 @@ io.on("connection", function (socket) {
     // var rooms =io.of('/').in(`${room}`).clients(clients)      ;
     // var rooms=io.of("/").to(`${room}`).sockets.size;
     const count = io.to(`${room}`).clients;    
-    console.log(count);
+    console.log(count.length);
     if (rooms < 2) {
       socket.join(`${room}`);
     } else {
