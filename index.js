@@ -57,7 +57,7 @@ io.on("connection", function (socket) {
   // //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
   // //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
   socket.on("resturant-id", (data) => {
-    console.log("Restaurant Id:" + data.restId);
+    console.log("Restaurant Id:" + data.resturantid);
     getLongLati4Resturant(restId).then((result) => {
       console.log(result);
       // {
