@@ -57,14 +57,14 @@ io.on("connection", function (socket) {
   // //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
   // //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
   socket.on("resturant-id", (data) => {
-    console.log("Restaurant Id:" + data.resturantid + "Room id:"+data.room);
+    console.log("Restaurant Id:" + data.resturantid + "Room id:" + data.room);
     getLongLati4Resturant(data.resturantid).then((result) => {
       console.log(result);
       // {
       //  geo_location_latitude: '33.502031',
       //  geo_location_longitude: '36.292023'
       // }
-      
+
       socket.to(`${data.room}`).emit("recieveRest", result);
     });
   });
@@ -101,22 +101,25 @@ io.on("connection", function (socket) {
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on("order-room", async (room) => {
-    console.log("order room:", room);    
-    const count = io.to(`${room}`).clients;    
+    console.log("order room:", room);
+    const count = io.to(`${room}`).clients;
     console.log(count.length);
     if (count.length < 2) {
-      console.log("Joining Delivery The Room With customer");        
+      console.log("Joining Delivery The Room With customer");
       socket.join(`${room}`);
-      socket.emit('canOrder',true);
+      socket.emit("canOrder", true);
     } else {
-      socket.emit('canOrder',false);
+      socket.emit("canOrder", false);
       console.log("Can't Join Because it's full");
     }
   });
   //this come and go from customer to delivery and resturant
-  socket.on("location", (data, room) => {
-    console.log(data, room);
-    socket.to(`${room}`).emit("get-location", data);
+  socket.on("location", (data) => {
+    console.log("Location Data:" + data);
+    socket.to(`${data.room}`).emit("get-location", {
+      latitude: data.latitude,
+      longitude: data.longitude,
+    });
   });
   socket.on("leave-room", (room) => {
     console.log("Leaving Room" + room);
