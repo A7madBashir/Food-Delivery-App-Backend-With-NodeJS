@@ -58,7 +58,7 @@ io.on("connection", function (socket) {
   // //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
   socket.on("resturant-id", (data) => {
     console.log("Restaurant Id:" + data.resturantid);
-    getLongLati4Resturant(restId).then((result) => {
+    getLongLati4Resturant(data.resturantid).then((result) => {
       console.log(result);
       // {
       //  geo_location_latitude: '33.502031',
