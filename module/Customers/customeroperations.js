@@ -254,7 +254,13 @@ Router
         .input("hash", sql.NVarChar, customer.password.hash)
         .input("salt", sql.NVarChar, customer.password.salt)
         .execute("UpdateCustomer");
-      return EditCustomer.recordsets;
+      EditCustomer.recordsets;
+      let product = await pool
+      .request()
+      .query(
+        `Select * from customer where cus_id=${customer.id}`
+      );
+    return product.recordsets[0][0];
     } catch (err) {
       console.log(err);
     }
