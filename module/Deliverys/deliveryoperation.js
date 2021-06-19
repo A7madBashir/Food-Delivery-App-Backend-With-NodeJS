@@ -156,7 +156,7 @@ async function AddBill(bill) {
 Router
 .route('/getOrder/:or_id')
 .get(async (req,res)=>{
-  const result= await sql.query(`select * from [order] where or_id=${req.params.or_id}`);
+  const result= await sql.query(`select [order].total_price,customer.phone from customer,[order] where customer.cus_id=[order].cus_id and [order].or_id=${req.params.or_id}`);
   res.status(200).json([...result.recordset][0]);
 })
 
