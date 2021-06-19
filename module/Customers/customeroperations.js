@@ -155,9 +155,9 @@ Router
     }
   }
 Router
-  .route("/ShowCustomer")
+  .route("/ShowCustomer/:id")
   .get(passport.authenticate('jwt', { session: false }),async(req,res)=>{ 
-      const result=await sql.query(`select * from customer`);
+      const result=await sql.query(`select * from customer where cus_id=${req.params.id}`);
       res.status(200).json([...result.recordset]);
   });
 
