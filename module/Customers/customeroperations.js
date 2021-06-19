@@ -110,7 +110,7 @@ Router
         .request()
         .input("username", sql.NVarChar, customer.username)
         .query(
-          "Select * from Customer where username =@username"
+          "Select * from Customer where username=@username and email=@email"
         );
       return product.recordsets[0][0];    
     } catch (err) {
@@ -249,9 +249,10 @@ Router
         .input("id",sql.Int,customer.id)
         .input("username", sql.NVarChar, customer.username)
         .input("phone", sql.NVarChar, customer.phone)
-        .input("Email", sql.NVarChar, customer.Email)
-        .input("address", sql.NVarChar, customer.address)
-        .input("password", sql.NVarChar, customer.password)
+        .input("email", sql.NVarChar, customer.email)
+        .input("addresss", sql.NVarChar, customer.address)
+        .input("hash", sql.NVarChar, customer.password.hash)
+        .input("salt", sql.NVarChar, customer.password.salt)
         .execute("UpdateCustomer");
       return EditCustomer.recordsets;
     } catch (err) {
