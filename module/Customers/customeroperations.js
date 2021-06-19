@@ -109,6 +109,7 @@ Router
         let product = await pool
         .request()
         .input("username", sql.NVarChar, customer.username)
+        .input("email", sql.NVarChar, customer.email)
         .query(
           "Select * from Customer where username=@username and email=@email"
         );
@@ -257,8 +258,9 @@ Router
       EditCustomer.recordsets;
       let product = await pool
       .request()
+      .input("id", sql.NVarChar, customer.id)
       .query(
-        `Select * from customer where cus_id=${customer.id}`
+        `Select * from customer where cus_id=@id`
       );
     return product.recordsets[0][0];
     } catch (err) {
