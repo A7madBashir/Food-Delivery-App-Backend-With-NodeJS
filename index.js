@@ -115,7 +115,7 @@ io.on("connection", function (socket) {
   //this come and go from customer to delivery and resturant
   socket.on("location", (data) => {
     // console.log("Location Data:",data);
-    // console.log(data.name,data.room,data.latitude,data.longitude);
+    console.log(data.name,data.room,data.latitude,data.longitude);
     socket.to(`${data.room}`).emit("get-location", {
       latitude: data.latitude,
       longitude: data.longitude,
