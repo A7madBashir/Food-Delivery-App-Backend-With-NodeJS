@@ -107,7 +107,7 @@ io.on("connection", function (socket) {
       io.to(`${room}`).clients.length+=io.to(`${room}`).clients.length;
       // console.log("Joining Delivery The Room With customer:",count.length);
       socket.join(`${room}`);
-      socket.emit("canOrder", true);
+      socket.to(`${room}`).emit("canOrder", true);
     } else {
       socket.emit("canOrder", false);
       console.log("Can't Join Because it's full");
