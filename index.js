@@ -57,9 +57,9 @@ io.on("connection", function (socket) {
   // //Get Restaurant Id From Customer App This Id Should Send To DataBase To Get Long&Lati
   // //This Data Will Compare It With All Online Deliveries And Get nearest one to Restaurant
   socket.on("resturant-id",async (data) => {
-    console.log("Restaurant Id:" + data.resturantid + "Room id:" + data.room);
+    // console.log("Restaurant Id:" + data.resturantid + "Room id:" + data.room);
     getLongLati4Resturant(data.resturantid).then(async(result) => {
-      console.log(result);
+      // console.log(result);
       // {
       //  geo_location_latitude: '33.502031',
       //  geo_location_longitude: '36.292023'
@@ -115,8 +115,8 @@ io.on("connection", function (socket) {
   });
   //this come and go from customer to delivery and resturant
   socket.on("location", (data) => {
-    console.log("Location Data:",data);
-    console.log(data.name,data.room,data.latitude,data.longitude);
+    // console.log("Location Data:",data);
+    // console.log(data.name,data.room,data.latitude,data.longitude);
     socket.to(`${data.room}`).emit("get-location", {
       latitude: data.latitude,
       longitude: data.longitude,
