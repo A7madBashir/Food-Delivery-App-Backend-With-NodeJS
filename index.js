@@ -104,7 +104,7 @@ io.on("connection", function (socket) {
     // const count = io.to(`${room}`).clients   ;        
     const count=io.to(`${room}`).clients; 
     // console.log("order room and members count:", room, "\t", count);
-    console.log("order room and members count:", room, "\t", count).length;
+    console.log("order room and members count:", room, "\t", count.length);
     if (count.length < 2) {      
       console.log("Joining Delivery The Room With customer:",io.to(`${room}`).clients.length);
       socket.join(`${room}`);
