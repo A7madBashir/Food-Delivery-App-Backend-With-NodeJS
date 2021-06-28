@@ -100,10 +100,11 @@ io.on("connection", function (socket) {
   //this event will send from customer first then get this from Delivery
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
-  socket.on("order-room", (room) => {
-    
+  socket.on("order-room", async (room) => {
+    const sockets1 = await io.in("room1").fetchSockets();
+    console.log(`All Sockets in ${room}`,sockets1);
     const count = io.engine.clientsCount;/* +1?? */    
-    console.log("order room and members count:", room, "\t", count);
+    console.log("order room and members count:", room, "\t", count.length);
     if (count < 2) {                 
       socket.join(`${room}`);
       io.to(`${room}`).emit("canOrder", true);      
