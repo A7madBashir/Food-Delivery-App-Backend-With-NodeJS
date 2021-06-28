@@ -40,7 +40,7 @@ io.on("connection", function (socket) {
   //so in this case will activiate function that take last order added to database
   //This order will send to order-room event to join the room
   socket.on("get-delivery", (data) => {
-    console.log(data);
+    console.log('order room :',data);
     socket.broadcast.emit("receive", data);
   });
 
@@ -97,17 +97,17 @@ io.on("connection", function (socket) {
     return result.recordsets[0][0];
   }
 
-  //this event will send from customer first
+  //this event will send from customer first then get this from Delivery
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
   socket.on("order-room", (room) => {
-    const count = io.to(`${room}`).clients;                    
+    const count = io.to(`${room}`).clients;/* +1?? */     
+    //const count=io.engine.to??               
     console.log("order room and members count:", room, "\t", count.length);
     if (count.length < 2) {                 
       socket.join(`${room}`);
       console.log("Joining Delivery The Room With customer:",io.to(`${room}`).clients.length);
-      socket.emit("canOrder", true);
-      io.to(`${room}`).clients.length++;
+      socket.to(`'${room}`).emit("canOrder", true);      
     } else {
       socket.emit("canOrder", false);
       console.log("Can't Join Because it's full");
