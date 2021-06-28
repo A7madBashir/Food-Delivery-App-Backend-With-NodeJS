@@ -100,14 +100,13 @@ io.on("connection", function (socket) {
   //this event will send from customer first then get this from Delivery
   //After send data to the database it's should get the last order that added
   //so here we can join room that customer joined by order id from get-delivery event
-  socket.on("order-room", async (room) => {     
-    const ids = await io.in(`${room}`).allSockets();   
-    const count =io.in(`${room}`).sockets.size;
-    console.log("Count of Socket of Room",room,'\t',ids);
+  socket.on("order-room", async (room) => {         
+    //    The Problem is Cannot Get Room Size Or ClientsCount :(   //
+    const count =io.in(`${room}`).clients.length;
     console.log("order room and members count:", room, "\t", count);
     if (count < 2) {
       socket.join(`${room}`);
-      socket.to(`${room}`).emit("canOrder", true);   
+      socket.emit("canOrder", true);   
       console.log("Joining Delivery The Room With customer:",io.in(`${room}`).clients.length);      
     } else {
       socket.emit("canOrder", false);
