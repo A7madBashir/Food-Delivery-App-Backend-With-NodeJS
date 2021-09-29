@@ -1,10 +1,10 @@
 const sql=require("mssql");
 //connect to DB
 const config = {
-    user: "db_a763da_fooddelivery03_admin",
+    user: "db_a7a6f8_fooddelivery04_admin",
     password: "123456789FD",
-    server: "SQL5053.site4now.net",
-    database: "db_a763da_fooddelivery03",
+    server: "SQL5108.site4now.net",
+    database: "db_a7a6f8_fooddelivery04",
     options: {  
       enableArithAbort: true,
     },
