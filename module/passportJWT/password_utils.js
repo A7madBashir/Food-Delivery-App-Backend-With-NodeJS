@@ -1,6 +1,4 @@
 const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
 const jsonWebToken = require("jsonwebtoken");
 //creates the hash for the pass based on a random salt
 const genPassword = (pass) => {
@@ -11,7 +9,7 @@ const genPassword = (pass) => {
     .toString("hex");
   return {
     salt,
-    hash
+    hash,
   };
 };
 /*
@@ -25,17 +23,15 @@ const valdatepass = (ogHash, salt, pass) => {
     .toString("hex");
   return enteredhash === ogHash;
 };
-// this function issues a jwt token for the user to store an attachto every request as the autherzation header
-const issueJwt = (user) => {  
-  //getting the path for the private key
-  const pathToPrivKey = path.normalize('./module/passportJWT/id_rsa_priv.pem');
-  //getting the private key from the path
-  const PrivKey = fs.readFileSync(pathToPrivKey, "utf-8");
+// this function issues a jwt token for the user to store an attach to every request as the authorization header
+const issueJwt = (user) => {
+  //getting the private key from the environment variable
+  const PrivKey = process.env.JSONWEBTOKEN_PRIVATEKEY
   //getting the user id to be able to include it in the token payload
-  const _id = user.cus_id;
+  const _id = user.cus_id ? user.cus_id : user.del_id;
   // creating the expirey date
   const expiresIn = "1d";
-  //creating the payload object 
+  //creating the payload object
   const payload = {
     sub: _id,
     iat: Date.now(),
@@ -46,10 +42,10 @@ const issueJwt = (user) => {
     algorithm: "RS256",
   });
   //returing the signed token with the expiry date
-  return{
-    token:`Bearer ${signedToken}`,
-    expires:expiresIn
-  }
+  return {
+    token: `Bearer ${signedToken}`,
+    expires: expiresIn,
+  };
 };
 module.exports.genPassword = genPassword;
 module.exports.valdatepass = valdatepass;
