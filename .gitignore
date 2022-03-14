@@ -1,5 +1,6 @@
 node_modules/
 tests/
-
+# Logs and databases #
+######################
 .env
 *.log
